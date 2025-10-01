@@ -1,0 +1,9 @@
+﻿{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "declaration": true,
+    "declarationMap": false
+  },
+  "exclude": ["__tests__", "**/*.test.ts", "vitest.config.ts"]
+}
