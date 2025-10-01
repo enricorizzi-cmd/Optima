@@ -10,7 +10,6 @@ import { ProductionProgressPage } from './pages/ProductionProgressPage';
 import { InventoryPage } from './pages/InventoryPage';
 import { DeliveriesPage } from './pages/DeliveriesPage';
 import { LoadingScreen } from './pages/LoadingScreen';
-import { Toaster } from './components/ui/toaster';
 
 function RequireAuth() {
   const { session, isLoading } = useSessionContext();
@@ -53,7 +52,6 @@ export default function App() {
           element={<Navigate to={session ? '/app/dashboard' : '/auth'} replace />}
         />
       </Routes>
-      <Toaster />
     </>
   );
 }

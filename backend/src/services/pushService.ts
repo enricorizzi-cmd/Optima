@@ -3,13 +3,20 @@ import { supabaseAdmin } from '../lib/supabase';
 import { getEnv } from '../lib/env';
 import { pushSubscriptionSchema } from '../schemas/push';
 
-const env = getEnv();
+let vapidConfigured = false;
 
-if (env.VAPID_PUBLIC && env.VAPID_PRIVATE) {
-  webpush.setVapidDetails('mailto:support@example.com', env.VAPID_PUBLIC, env.VAPID_PRIVATE);
+function ensureVapidConfigured() {
+  if (vapidConfigured) return;
+  
+  const env = getEnv();
+  if (env.VAPID_PUBLIC && env.VAPID_PRIVATE) {
+    webpush.setVapidDetails('mailto:support@example.com', env.VAPID_PUBLIC, env.VAPID_PRIVATE);
+    vapidConfigured = true;
+  }
 }
 
 export async function saveSubscription(orgId: string, userId: string, payload: unknown) {
+  ensureVapidConfigured();
   const subscription = pushSubscriptionSchema.parse(payload);
 
   const { data, error } = await supabaseAdmin
@@ -34,6 +41,9 @@ export async function saveSubscription(orgId: string, userId: string, payload: u
 }
 
 export async function sendTestNotification(subscriptionId: string, orgId: string, payload: { title: string; body: string }) {
+  ensureVapidConfigured();
+  
+  const env = getEnv();
   if (!env.VAPID_PUBLIC || !env.VAPID_PRIVATE) {
     throw new Error('Missing VAPID keys, cannot send push notification');
   }

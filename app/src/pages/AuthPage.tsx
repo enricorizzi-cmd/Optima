@@ -11,7 +11,6 @@ import { Badge } from '../components/ui/badge';
 interface AuthFormValues {
   email: string;
   password: string;
-  orgId: string;
   fullName?: string;
   role: 'owner' | 'admin' | 'editor' | 'viewer';
 }
@@ -55,7 +54,7 @@ export function AuthPage() {
           password: values.password,
           options: {
             data: {
-              org_id: values.orgId,
+              org_id: '00000000-0000-0000-0000-000000000001', // Default organization UUID
               full_name: values.fullName,
               role: values.role,
             },
@@ -97,17 +96,6 @@ export function AuthPage() {
                     Nome completo
                   </label>
                   <Input id="fullName" placeholder="Es. Mario Rossi" {...register('fullName')} />
-                </div>
-                <div>
-                  <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="orgId">
-                    ID organizzazione
-                  </label>
-                  <Input
-                    id="orgId"
-                    placeholder="ORG-12345"
-                    {...register('orgId', { required: 'Campo obbligatorio' })}
-                  />
-                  {errors.orgId && <p className="mt-1 text-xs text-danger">{errors.orgId.message}</p>}
                 </div>
                 <div>
                   <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="role">

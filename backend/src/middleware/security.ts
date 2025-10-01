@@ -27,15 +27,15 @@ export default fp(async (fastify) => {
     credentials: true,
   });
 
-  // Global rate limiting
+  // Global rate limiting - more permissive for development
   await fastify.register(rateLimit, {
-    max: 200,
+    max: 1000,
     timeWindow: '1 minute',
   });
 
-  // Stricter rate limiting for sensitive operations
+  // Stricter rate limiting for sensitive operations - more permissive for development
   await fastify.register(rateLimit, {
-    max: 10,
+    max: 100,
     timeWindow: '1 minute',
     keyGenerator: (request) => {
       const user = (request as any).user;
@@ -44,7 +44,7 @@ export default fp(async (fastify) => {
   }, { prefix: '/api/orders' });
 
   await fastify.register(rateLimit, {
-    max: 5,
+    max: 50,
     timeWindow: '1 minute',
     keyGenerator: (request) => {
       const user = (request as any).user;

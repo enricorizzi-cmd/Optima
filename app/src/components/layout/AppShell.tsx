@@ -2,6 +2,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { Toaster } from '../ui/toaster';
 import { cn } from '../../lib/utils';
 
 export function AppShell() {
@@ -38,6 +39,7 @@ export function AppShell() {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+      <Toaster />
     </div>
   );
 }
