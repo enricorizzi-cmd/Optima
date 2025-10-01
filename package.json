@@ -1,11 +1,14 @@
-﻿{
+{
   "name": "optima-production-suite",
   "version": "0.1.0",
   "private": true,
   "engines": {
     "node": "20.x"
   },
-  "workspaces": ["app", "backend"],
+  "workspaces": [
+    "app",
+    "backend"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w app\"",
     "build": "npm run build -w backend && npm run build -w app",

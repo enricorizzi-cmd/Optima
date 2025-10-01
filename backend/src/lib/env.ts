@@ -1,4 +1,5 @@
 ﻿import { z } from 'zod';
+import 'dotenv/config';
 
 type Env = z.infer<typeof envSchema>;
 
