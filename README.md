@@ -23,18 +23,28 @@ Optima Production Suite e una web app PWA per gestire anagrafiche, ordini client
 
 ## Setup rapido
 
+Per avviare l'app in locale segui questi passi (una volta sola dove indicato):
+
+### 1. Installa prerequisiti
+- Node 20 (vedi `.nvmrc`)
+- npm ≥ 9
+- Supabase CLI se vuoi applicare le migrazioni localmente
+- Coppia di chiavi VAPID (`web-push generate-vapid-keys`)
+
+### 2. Installa dipendenze
 ```bash
+# Dentro c:\Optima esegui npm install per installare tutte le dipendenze dei workspace
 npm install
+```
 
-# Ambiente backend
-cp backend/.env.example backend/.env
-# Popola SUPABASE_URL, SUPABASE_SERVICE_ROLE, SUPABASE_ANON_KEY, VAPID_*
+### 3. Configura variabili d'ambiente
+I file `.env` sono già presenti con le chiavi reali configurate. Se necessario, modifica i valori in:
+- `backend/.env` (SUPABASE_URL, SUPABASE_SERVICE_ROLE, SUPABASE_ANON_KEY, chiavi VAPID)
+- `app/.env` (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_BACKEND_URL, VITE_VAPID_PUBLIC_KEY)
 
-# Ambiente frontend
-cp app/.env.example app/.env
-# Imposta VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_BACKEND_URL, VITE_VAPID_PUBLIC_KEY
-
-# Migrazioni + seed (richiede supabase cli loggata)
+### 4. Database (se usi un Supabase locale/di prova)
+```bash
+# Applica migrazioni e seed
 supabase db push --file supabase/migrations/0001_init.sql
 supabase db query -f supabase/policies.sql
 supabase db query -f supabase/seed.sql
@@ -42,17 +52,22 @@ supabase db query -f supabase/seed.sql
 
 > **Backup & restore**: pianifica `pg_dump` giornalieri della base dati e conserva copie su storage esterno. Verifica mensilmente il ripristino su ambiente di staging prima di aggiornare la produzione.
 
-## Avvio in locale
-
+### 5. Avvia l'applicazione
 ```bash
-# Avvia backend (porta 4000)
+# Avvia il backend (porta 4000)
 npm run dev -w backend
 
-# Avvia frontend (porta 5173)
+# In un altro terminale, avvia il frontend (porta 5173)
 npm run dev -w app
 ```
 
-L'app e raggiungibile su `http://localhost:5173`. Il frontend usa Supabase Auth: crea utenti via Auth UI/CLI e assicurati che i metadati includano `org_id` e `role` coerenti con le policy RLS.
+L'interfaccia sarà disponibile su `http://localhost:5173`. Effettua il login con un utente creato su Supabase e assicurati che i metadati includano `org_id` e `role` coerenti con le RLS.
+
+### 6. Verifica (opzionale)
+Se vuoi verificare che tutto giri bene, puoi lanciare:
+```bash
+npm run lint
+```
 
 ### Comandi principali
 
