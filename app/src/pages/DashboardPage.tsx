@@ -83,7 +83,7 @@ export function DashboardPage() {
               {push.error && <span className="text-xs text-danger">{push.error}</span>}
             </div>
             <p className="mt-3 text-xs text-white/40">
-              Su iOS/iPadOS aggiungi l’app alla schermata Home (>=16.4) per abilitare le push.
+              Su iOS/iPadOS aggiungi l'app alla schermata Home (&gt;=16.4) per abilitare le push.
             </p>
           </CardContent>
         </Card>

@@ -1,4 +1,4 @@
-﻿import { createBrowserSupabaseClient } from '@supabase/auth-helpers-react';
+﻿import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { env } from './env';
 
@@ -6,10 +6,7 @@ let client: SupabaseClient | null = null;
 
 export function getSupabaseClient(): SupabaseClient {
   if (!client) {
-    client = createBrowserSupabaseClient({
-      supabaseUrl: env.supabaseUrl,
-      supabaseKey: env.supabaseAnonKey,
-    });
+    client = createClient(env.supabaseUrl, env.supabaseAnonKey);
   }
   return client;
 }
