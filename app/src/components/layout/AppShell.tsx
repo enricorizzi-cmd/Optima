@@ -8,7 +8,7 @@ export function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#0b0f19] text-white">
+    <div className="flex min-h-screen bg-white text-gray-900">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Header onToggleSidebar={() => setSidebarOpen((value) => !value)} />
@@ -20,12 +20,12 @@ export function AppShell() {
       </div>
       <div
         className={cn(
-          'fixed inset-y-0 right-0 z-30 w-64 bg-[#0d1326]/95 p-6 shadow-xl transition-transform lg:hidden',
+          'fixed inset-y-0 right-0 z-30 w-64 bg-gray-50/95 p-6 shadow-xl transition-transform lg:hidden',
           sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         <button
-          className="mb-4 text-sm text-white/60 hover:text-white"
+          className="mb-4 text-sm text-gray-600 hover:text-gray-900"
           onClick={() => setSidebarOpen(false)}
         >
           Chiudi
@@ -34,7 +34,7 @@ export function AppShell() {
       </div>
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/60 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-20 bg-gray-900/60 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

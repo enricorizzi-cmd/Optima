@@ -28,12 +28,12 @@ export function Sidebar({ variant = 'desktop', onNavigate }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'flex min-h-full w-64 flex-col border-r border-white/5 bg-[#0d1326]/80 p-6 shadow-[inset_-8px_0_30px_rgba(124,58,237,0.1)] backdrop-blur',
+        'flex min-h-full w-64 flex-col border-r border-gray-200 bg-gray-50/80 p-6 shadow-[inset_-8px_0_30px_rgba(37,99,235,0.1)] backdrop-blur',
         variant === 'desktop' ? 'hidden lg:flex' : 'lg:hidden'
       )}
     >
       <div className="mb-10">
-        <div className="text-sm uppercase tracking-[0.4em] text-white/40">Optima</div>
+        <div className="text-sm uppercase tracking-[0.4em] text-gray-500">Optima</div>
         <h1 className="mt-2 font-display text-2xl text-primary">Production Suite</h1>
       </div>
       <nav className="flex flex-1 flex-col gap-2">
@@ -47,7 +47,7 @@ export function Sidebar({ variant = 'desktop', onNavigate }: SidebarProps) {
                 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-primary/20 text-primary shadow-neon'
-                  : 'text-white/60 hover:bg-white/10 hover:text-white'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               )
             }
           >
@@ -56,7 +56,7 @@ export function Sidebar({ variant = 'desktop', onNavigate }: SidebarProps) {
           </NavLink>
         ))}
       </nav>
-      <div className="mt-auto pt-6 text-xs text-white/40">
+      <div className="mt-auto pt-6 text-xs text-gray-500">
         <div className="flex items-center gap-2">
           <Settings size={14} />
           <span>Build {__APP_VERSION__}</span>

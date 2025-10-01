@@ -6,13 +6,13 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #0b0f19;
+    background-color: #ffffff;
   }
 
   body {
-    @apply bg-background text-white antialiased;
+    @apply bg-background text-gray-900 antialiased;
   }
 
   a {

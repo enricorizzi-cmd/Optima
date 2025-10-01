@@ -75,14 +75,14 @@ export function AuthPage() {
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0b0f19] px-4 py-10 text-white">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 text-gray-900">
       <Card className="w-full max-w-xl">
         <CardHeader>
           <Badge variant="default">Optima Production Suite</Badge>
           <CardTitle className="text-2xl">
             {mode === 'login' ? 'Accedi alla tua organizzazione' : 'Crea un account'}
           </CardTitle>
-          <CardDescription className="text-white/70">
+          <CardDescription className="text-gray-600">
             {mode === 'login'
               ? 'Gestisci ordini, produzione e consegne con un’unica dashboard PWA.'
               : 'Registra il tuo account. Assicurati di avere l’ID organizzazione fornito dall’amministratore.'}
@@ -93,13 +93,13 @@ export function AuthPage() {
             {mode === 'register' && (
               <>
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-wide text-white/60" htmlFor="fullName">
+                  <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="fullName">
                     Nome completo
                   </label>
                   <Input id="fullName" placeholder="Es. Mario Rossi" {...register('fullName')} />
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-wide text-white/60" htmlFor="orgId">
+                  <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="orgId">
                     ID organizzazione
                   </label>
                   <Input
@@ -110,7 +110,7 @@ export function AuthPage() {
                   {errors.orgId && <p className="mt-1 text-xs text-danger">{errors.orgId.message}</p>}
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-wide text-white/60" htmlFor="role">
+                  <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="role">
                     Ruolo
                   </label>
                   <Select id="role" {...register('role')}>
@@ -124,7 +124,7 @@ export function AuthPage() {
             )}
 
             <div>
-              <label className="mb-2 block text-xs uppercase tracking-wide text-white/60" htmlFor="email">
+              <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="email">
                 Email
               </label>
               <Input
@@ -137,7 +137,7 @@ export function AuthPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-xs uppercase tracking-wide text-white/60" htmlFor="password">
+              <label className="mb-2 block text-xs uppercase tracking-wide text-gray-600" htmlFor="password">
                 Password
               </label>
               <Input
@@ -158,7 +158,7 @@ export function AuthPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-white/70">
+          <div className="mt-6 text-center text-sm text-gray-600">
             {mode === 'login' ? (
               <button className="text-primary hover:text-primary/80" onClick={() => setMode('register')}>
                 Non hai un account? Registrati
