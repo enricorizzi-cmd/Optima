@@ -17,8 +17,8 @@ COPY src/ ./src/
 # Copy server wrapper
 COPY server.js ./
 
-# Skip TypeScript build for now - start directly with JS runtime
- # RUN npm run build
+# Build TypeScript to JavaScript
+RUN npm run build
 
 # Install ts-node for runtime TypeScript execution
 RUN npm install -g ts-node
@@ -40,5 +40,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ENV NODE_ENV=production
 ENV PORT=4000
 
-# Start command using wrapper to bypass module resolution issues
-CMD ["node", "server.js"]
+# Start command using compiled JavaScript
+CMD ["node", "dist/index.js"]
