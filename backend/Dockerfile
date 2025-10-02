@@ -14,8 +14,11 @@ RUN npm install
 # Copy source code
 COPY src/ ./src/
 
+# Copy server wrapper
+COPY server.js ./
+
 # Skip TypeScript build for now - start directly with JS runtime
-# RUN npm run build
+ # RUN npm run build
 
 # Install ts-node for runtime TypeScript execution
 RUN npm install -g ts-node
@@ -37,5 +40,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ENV NODE_ENV=production
 ENV PORT=4000
 
-# Start command with ts-node (bypasses compilation step and ignores type checking)
-CMD ["npx", "ts-node", "--transpile-only", "--files", "src/index.ts"]
+# Start command using wrapper to bypass module resolution issues
+CMD ["node", "server.js"]
