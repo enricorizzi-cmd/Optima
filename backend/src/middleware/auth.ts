@@ -30,7 +30,7 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
     const trimmed = orgIdentifier.trim();
     const uuidResult = uuidSchema.safeParse(trimmed);
     if (uuidResult.success) {
-      return uuidResult.data;
+      return { orgId: uuidResult.data, role: 'viewer' };
     }
 
     const slugValue = trimmed.toLowerCase();
@@ -43,7 +43,7 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
       logger.error({ error: slugError, slugValue }, 'Failed to resolve organization by slug');
     }
     if (orgBySlug?.id) {
-      return orgBySlug.id;
+      return { orgId: orgBySlug.id, role: 'viewer' };
     }
 
     const { data: orgByName, error: nameError } = await supabaseAdmin
@@ -55,13 +55,14 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
       logger.error({ error: nameError, orgIdentifier: trimmed }, 'Failed to resolve organization by name');
     }
     if (orgByName?.id) {
-      return orgByName.id;
+      return { orgId: orgByName.id, role: 'viewer' };
     }
   }
 
+  // Always check profiles table first, as this should be the authoritative source
   const { data: profile, error: profileError } = await supabaseAdmin
     .from('profiles')
-    .select('org_id')
+    .select('org_id, role')
     .eq('user_id', userId)
     .order('created_at', { ascending: true })
     .limit(1)
@@ -70,9 +71,12 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
     logger.error({ error: profileError, userId }, 'Failed to resolve organization from profiles');
   }
   if (profile?.org_id) {
-    return profile.org_id;
+    return { orgId: profile.org_id, role: profile.role };
   }
 
+  // If no profile exists, create one automatically
+  logger.warn({ userId }, 'No profile found for user, creating default profile');
+  
   const { data: fallback, error: fallbackError } = await supabaseAdmin
     .from('organizations')
     .select('id')
@@ -85,8 +89,30 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
   }
 
   if (fallback?.id) {
-    logger.warn({ userId }, 'Falling back to first available organization for user');
-    return fallback.id;
+    // Create a default profile for the user
+    try {
+      const { data: newProfile, error: createError } = await supabaseAdmin
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          org_id: fallback.id,
+          role: 'viewer',
+          full_name: 'User'
+        })
+        .select('id', 'org_id', 'role')
+        .single();
+      
+      if (createError) {
+        logger.error({ error: createError, userId }, 'Failed to create default profile');
+        return { orgId: fallback.id, role: 'viewer' };
+      }
+      
+      logger.info({ userId, orgId: fallback.id }, 'Created default profile for user');
+      return { orgId: fallback.id, role: 'viewer' };
+    } catch (err) {
+      logger.error({ error: err, userId }, 'Exception creating default profile');
+      return { orgId: fallback.id, role: 'viewer' };
+    }
   }
 
   return null;
@@ -115,13 +141,15 @@ async function verifyRequest(request: FastifyRequest, reply: FastifyReply) {
     return reply.status(403).send({ message: 'Unauthorized' });
   }
 
-  const role = parsed.data.app_metadata.role ?? parsed.data.user_metadata.role ?? 'viewer';
-
-  const orgId = await resolveOrgId(parsed.data.id, parsed.data.user_metadata.org_id);
-  if (!orgId) {
+  const resolved = await resolveOrgId(parsed.data.id, parsed.data.user_metadata.org_id);
+  if (!resolved) {
     logger.error({ userId: parsed.data.id }, 'Unable to resolve organization for user');
     return reply.status(403).send({ message: 'Unauthorized organization' });
   }
+
+  // resolved is now always an object with orgId and role
+  const orgId = resolved.orgId;
+  const role = resolved.role;
 
   const user: AuthUser = {
     id: parsed.data.id,
