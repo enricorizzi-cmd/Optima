@@ -53,12 +53,30 @@ supabase db query -f supabase/seed.sql
 > **Backup & restore**: pianifica `pg_dump` giornalieri della base dati e conserva copie su storage esterno. Verifica mensilmente il ripristino su ambiente di staging prima di aggiornare la produzione.
 
 ### 5. Avvia l'applicazione
+
+**Opzione A: Sviluppo locale**
 ```bash
 # Avvia il backend (porta 4000)
 npm run dev -w backend
 
 # In un altro terminale, avvia il frontend (porta 5173)
 npm run dev -w app
+```
+
+**Opzione B: Docker**
+```bash
+# Test del backend con Docker (richiede Docker installato)
+docker-compose up backend
+
+# Oppure build manuale
+cd backend
+docker build -t optima-backend .
+docker run -p 4000:4000 \
+  -e NODE_ENV=production \
+  -e SUPABASE_URL=https://tvpymdbfqmtvlbvxqxwg.supabase.co \
+  -e SUPABASE_SERVICE_ROLE=$your_service_role_key \
+  -e SUPABASE_ANON_KEY=$your_service_role_key \
+  optima-backend
 ```
 
 L'interfaccia sarà disponibile su `http://localhost:5173`. Effettua il login con un utente creato su Supabase e assicurati che i metadati includano `org_id` e `role` coerenti con le RLS.
@@ -100,13 +118,44 @@ Per nuove tabelle: aggiungi migrazione, abilita RLS, aggiorna `supabase/policies
 - Registrazione push: dalla dashboard attiva le notifiche (richiede VAPID public key nel frontend). Backend gestisce `POST /api/push/subscribe` e `POST /api/push/test` via `web-push`.
 - iOS/iPadOS 16.4+: ricorda agli utenti di aggiungere l'app alla Home per ricevere push (messaggio presente nella dashboard).
 
-## Deploy su Render (indicativo)
+## Stato Deploy su Render
 
-1. **Servizio backend** (Docker o Node buildpack):
-   - Variabili: `DATABASE_URL` (con `?sslmode=require`), `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE`, `SUPABASE_ANON_KEY`, `VAPID_PUBLIC`, `VAPID_PRIVATE`, `SENTRY_DSN`, `CORS_ORIGIN`.
-   - Healthcheck: `/healthz` e `/readyz` (200 OK).
-2. **Servizio frontend**: build Vite (`npm run build -w app`), deploy statico (`app/dist`).
-3. Configura Render deploy hook da GitHub Actions (`main` branch) e abilita auto-build.
+✅ **Frontend**: DEPLOYATO E LIVE 
+   - URL: https://optima-production-frontend.onrender.com
+   - Status: Live e funzionante
+
+✅ **Database Postgres**: ATTIVO
+   - ID: `dpg-d3f75j95pdvs73cjc3a0-a`  
+   - Regione: Frankfurt
+   - Status: Available
+
+🟡 **Backend**: DA COMPLETARE
+   - Richiede configurazione manuale tramite dashboard Render
+   - Usa Dockerfile incluso in `backend/Dockerfile`
+
+### Completare il Backend su Render
+
+1. **Vai su**: https://dashboard.render.com/web/new
+2. **Configurazione**:
+   - Repository: `https://github.com/enricorizzi-cmd/Optima.git`
+   - Branch: `main`
+   - Environment: Docker
+   - Dockerfile Path: `backend/Dockerfile`
+   - Region: Frankfurt
+   - Plan: Starter (richiede carta di credito)
+
+3. **Variabili d'Ambiente Richieste**:
+```
+NODE_ENV=production
+PORT=4000
+SUPABASE_URL=https://tvpymdbfqmtvlbvxqxwg.supabase.co
+SUPABASE_SERVICE_ROLE=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2cHltZGJmcW10dmxidnlxeHdnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzMwMzgzMCwiZXhwIjoyMDYyODc5ODMwfQ.amW7yZX8YjF4CQHYzK5FhX5gvN8HnDKlRqLZnGvNpQs
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2cHltZGJmcW10dmxidnlxeHdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMDM4MzAsImV4cCI6MjA2Mjg3OTgzMH0.tO_VmjF4hS_jz3E-wTkQl-R-qZxQZj7mGfS-OVQw8Ac
+CORS_ORIGIN=https://optima-production-frontend.onrender.com
+```
+
+4. **Health Check**: `/health` (configurare nel dashboard)
+5. **Auto-Deploy**: Abilita dal branch `main`
 
 CI suggerita:
 - Install -> lint -> test (frontend/backend) -> build.
