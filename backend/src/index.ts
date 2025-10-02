@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import authPlugin from './middleware/auth';
 import securityPlugin from './middleware/security';
+import { registerAuthRoutes } from './routes/auth';
 import { registerCatalogRoutes } from './routes/catalog';
 import { registerProductionRoutes } from './routes/production';
 import { registerPushRoutes } from './routes/push';
@@ -20,7 +21,9 @@ async function buildServer() {
   app.setSerializerCompiler(serializerCompiler);
 
   await app.register(securityPlugin);
+  await app.register(securityPlugin);
   await app.register(registerHealthRoutes);
+  await app.register(registerAuthRoutes);
   await app.register(authPlugin);
   await app.register(registerCatalogRoutes);
   await app.register(registerProductionRoutes);
