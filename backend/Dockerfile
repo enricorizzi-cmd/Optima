@@ -38,4 +38,4 @@ ENV NODE_ENV=production
 ENV PORT=4000
 
 # Start command with ts-node (bypasses compilation step and ignores type checking)
-CMD ["npx", "ts-node", "--esm", "--transpile-only", "--files", "--no-cache", "src/index.ts"]
+CMD ["npx", "ts-node", "--esm", "--transpile-only", "--files", "src/index.ts"]
