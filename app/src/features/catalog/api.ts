@@ -213,9 +213,9 @@ export function useCreateClient(options?: UseMutationOptions<Client, Error, Clie
         method: 'POST',
         body: JSON.stringify(payload),
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
@@ -236,9 +236,9 @@ export function useUpdateClient(
         method: 'PUT',
         body: JSON.stringify(payload),
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
@@ -256,9 +256,9 @@ export function useDeleteClient(options?: UseMutationOptions<void, Error, string
       request(`/api/catalog/clients/${id}`, {
         method: 'DELETE',
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
@@ -277,9 +277,9 @@ export function useCreateRawMaterial(options?: UseMutationOptions<RawMaterial, E
         method: 'POST',
         body: JSON.stringify(payload),
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.rawMaterials() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
@@ -300,9 +300,9 @@ export function useUpdateRawMaterial(
         method: 'PUT',
         body: JSON.stringify(payload),
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.rawMaterials() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
@@ -320,9 +320,9 @@ export function useDeleteRawMaterial(options?: UseMutationOptions<void, Error, s
       request(`/api/catalog/raw-materials/${id}`, {
         method: 'DELETE',
       }),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.rawMaterials() });
-      onSuccess?.(data, variables, context);
+      onSuccess?.(data, variables, context, meta);
     },
     onError,
     onSettled,
