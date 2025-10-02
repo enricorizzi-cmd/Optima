@@ -1,4 +1,4 @@
-const webpush = require('web-push');
+import webpush from 'web-push';
 
 // Genera nuove chiavi VAPID
 const vapidKeys = webpush.generateVAPIDKeys();
