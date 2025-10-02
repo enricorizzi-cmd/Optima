@@ -10,7 +10,7 @@ import {
   useUpdateClient,
   useCreateRawMaterial,
   useUpdateRawMaterial,
-} from '../features/catalog/api';
+} from '../features/catalog/supabaseApi';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Table, Tbody, Td, Th, Thead, Tr } from '../components/ui/table';
 import { Badge } from '../components/ui/badge';

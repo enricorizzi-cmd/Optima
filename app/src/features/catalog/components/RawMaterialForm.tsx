@@ -6,7 +6,7 @@ import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
 import { Select } from '../../../components/ui/select';
 import { Button } from '../../../components/ui/button';
-import type { RawMaterialPayload, Supplier } from '../api';
+import type { RawMaterialPayload, Supplier } from '../supabaseApi';
 
 const rawMaterialSchema = z.object({
   name: z.string().min(1, 'Campo obbligatorio'),

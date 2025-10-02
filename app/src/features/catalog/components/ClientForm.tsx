@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
 import { Button } from '../../../components/ui/button';
-import type { ClientPayload } from '../api';
+import type { ClientPayload } from '../supabaseApi';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Campo obbligatorio'),
