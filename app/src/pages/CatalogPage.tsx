@@ -115,7 +115,7 @@ export function CatalogPage() {
                 className={`rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.key
                     ? 'border-blue-600 bg-blue-600 text-white shadow-lg transform scale-105'
-                    : 'border-gray-300 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-800 shadow-sm'
+                    : 'border-gray-800 bg-gray-100 text-gray-900 hover:bg-blue-100 hover:border-blue-500 hover:text-blue-900 shadow-md'
                 }`}
               >
                 {tab.label}
