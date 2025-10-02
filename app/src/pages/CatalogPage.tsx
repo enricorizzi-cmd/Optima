@@ -107,15 +107,15 @@ export function CatalogPage() {
           <CardDescription>Gestisci clienti, fornitori e risorse di produzione con un unico data hub.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
+                className={`rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.key
-                    ? 'border-primary bg-primary/20 text-primary shadow-neon'
-                    : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                    ? 'border-blue-500 bg-blue-100 text-blue-700 shadow-md'
+                    : 'border-gray-400 bg-gray-50 text-gray-800 hover:bg-gray-100 hover:border-gray-500 hover:text-gray-900 shadow-sm'
                 }`}
               >
                 {tab.label}
@@ -196,7 +196,7 @@ export function CatalogPage() {
                     </Td>
                     <Td>{client.category}</Td>
                     <Td>
-                      <div className="flex flex-col text-xs text-white/60">
+                      <div className="flex flex-col text-xs text-gray-500">
                         {client.email}
                         {client.phone}
                       </div>
@@ -247,7 +247,7 @@ export function CatalogPage() {
                     <Td>{supplier.payment_terms ?? '-'}</Td>
                     <Td>{supplier.category}</Td>
                     <Td>
-                      <div className="flex flex-col text-xs text-white/60">
+                      <div className="flex flex-col text-xs text-gray-500">
                         {supplier.email}
                         {supplier.phone}
                       </div>

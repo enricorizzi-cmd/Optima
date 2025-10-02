@@ -23,7 +23,7 @@ export function InventoryPage() {
                 className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                   filter === type
                     ? 'border-primary bg-primary/20 text-primary shadow-neon'
-                    : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+                    : 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-900 shadow-sm'
                 }`}
               >
                 {type === 'all' ? 'Tutto' : type === 'raw_material' ? 'Materie prime' : 'Prodotti finiti'}
@@ -64,7 +64,7 @@ export function InventoryPage() {
             </Tbody>
           </Table>
           {inventory && inventory.length === 0 && (
-            <p className="mt-4 text-sm text-white/60">Nessuna giacenza caricata per il filtro selezionato.</p>
+            <p className="mt-4 text-sm text-gray-600">Nessuna giacenza caricata per il filtro selezionato.</p>
           )}
         </CardContent>
       </Card>

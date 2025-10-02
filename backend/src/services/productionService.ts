@@ -98,7 +98,10 @@ async function fetchOrdersFromBaseTable(orgId: string): Promise<OrderWithNormali
 }
 
 function handleError(error: unknown): never {
-  throw error instanceof Error ? error : new Error('Unknown Supabase error');
+  if (error instanceof Error) {
+    throw error;
+  }
+  throw new Error(`Unknown Supabase error: ${JSON.stringify(error)}`);
 }
 
 export async function listOrders(orgId: string): Promise<OrderWithNormalizedLines[]> {
@@ -218,6 +221,9 @@ export async function listDeliveries(orgId: string) {
     .select('*')
     .eq('org_id', orgId)
     .order('created_at', { ascending: false });
-  if (error) handleError(error);
-  return data;
+  if (error) {
+    console.error('Supabase error in listDeliveries:', error);
+    throw error instanceof Error ? error : new Error(`Supabase error: ${JSON.stringify(error)}`);
+  }
+  return data || [];
 }

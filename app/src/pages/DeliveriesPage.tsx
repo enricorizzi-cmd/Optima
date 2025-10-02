@@ -72,7 +72,7 @@ export function DeliveriesPage() {
             </Tbody>
           </Table>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
-            <p className="mt-4 text-sm text-white/60">Nessuna consegna ancora programmata.</p>
+            <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>
           )}
         </CardContent>
       </Card>

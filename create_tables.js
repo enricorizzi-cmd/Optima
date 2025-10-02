@@ -14,16 +14,35 @@ async function createTables() {
     // Read the SQL file
     const sql = fs.readFileSync('./create_tables.sql', 'utf8');
     
-    // Execute the SQL
-    const { data, error } = await supabase.rpc('exec_sql', { sql });
+    // Split SQL into individual statements  
+    const statements = sql
+      .split(';')
+      .map(stmt => stmt.trim())
+      .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
     
-    if (error) {
-      console.error('Error creating tables:', error);
-      return;
+    console.log(`Found ${statements.length} SQL statements to execute`);
+    
+    // Execute each statement separately
+    for (let i = 0; i < statements.length; i++) {
+      const statement = statements[i];
+      console.log(`Executing statement ${i + 1}: ${statement.substring(0, 50)}...`);
+      
+      try {
+        const { data, error } = await supabase.rpc('exec', { sql: statement + ';' });
+        
+        if (error) {
+          console.warn(`Warning in statement ${i + 1}:`, error.message);
+          // Continue to next statement
+        } else {
+          console.log(`Statement ${i + 1} executed successfully`);
+        }
+      } catch (err) {
+        console.warn(`Warning in statement ${i + 1}:`, err.message);
+        // Continue to next statement
+      }
     }
     
-    console.log('Tables created successfully!');
-    console.log('Data:', data);
+    console.log('Table creation process completed!');
     
   } catch (err) {
     console.error('Error:', err);
@@ -31,4 +50,6 @@ async function createTables() {
 }
 
 createTables();
+
+
 

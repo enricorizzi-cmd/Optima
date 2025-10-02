@@ -158,6 +158,55 @@ create table if not exists suppliers (
 );
 create trigger trg_suppliers_updated_at before update on suppliers for each row execute function set_updated_at();
 
+-- Create production_schedules table
+create table if not exists production_schedules (
+  id uuid primary key default gen_random_uuid(),
+  org_id uuid not null references organizations (id) on delete cascade,
+  order_id uuid not null references customer_orders (id) on delete cascade,
+  order_line_id uuid not null references customer_order_lines (id) on delete cascade,
+  planned_quantity numeric(14,3) not null,
+  production_line text not null,
+  scheduled_start timestamptz not null,
+  scheduled_end timestamptz not null,
+  status text not null check (status in ('planned', 'in_progress', 'completed', 'stocked')) default 'planned',
+  operator_id uuid references operators (id),
+  warehouse_id uuid references warehouses (id),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create trigger trg_production_schedules_updated_at before update on production_schedules for each row execute function set_updated_at();
+
+-- Create production_progress_logs table
+create table if not exists production_progress_logs (
+  id uuid primary key default gen_random_uuid(),
+  org_id uuid not null references organizations (id) on delete cascade,
+  schedule_id uuid not null references production_schedules (id) on delete cascade,
+  status text not null check (status in ('planned', 'in_progress', 'completed', 'stocked')),
+  quantity_completed numeric(14,3) not null default 0,
+  notes text,
+  recorded_by text not null,
+  recorded_at timestamptz not null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create trigger trg_production_progress_logs_updated_at before update on production_progress_logs for each row execute function set_updated_at();
+
+-- Create deliveries table
+create table if not exists deliveries (
+  id uuid primary key default gen_random_uuid(),
+  org_id uuid not null references organizations (id) on delete cascade,
+  order_id uuid not null references customer_orders (id) on delete cascade,
+  schedule_id uuid not null references production_schedules (id) on delete cascade,
+  warehouse_id uuid not null references warehouses (id) on delete cascade,
+  status text not null check (status in ('pending', 'prepared', 'shipped', 'delivered')) default 'pending',
+  delivery_date date,
+  transporter text,
+  tracking_number text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+create trigger trg_deliveries_updated_at before update on deliveries for each row execute function set_updated_at();
+
 -- Create customer_orders table
 create table if not exists customer_orders (
   id uuid primary key default gen_random_uuid(),
@@ -248,4 +297,18 @@ insert into customer_order_lines (id, order_id, product_id, quantity, unit_price
 values 
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 10.000, 25.00, 'pz'),
   ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', 5.000, 30.00, 'pz')
+on conflict (id) do nothing;
+
+-- Insert sample production schedules
+insert into production_schedules (id, org_id, order_id, order_line_id, planned_quantity, production_line, scheduled_start, scheduled_end, status, operator_id, warehouse_id)
+values 
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 10.000, 'Linea A', '2024-02-01 08:00:00+01', '2024-02-01 16:00:00+01', 'planned', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001'),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', 5.000, 'Linea B', '2024-02-02 09:00:00+01', '2024-02-02 17:00:00+01', 'planned', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002')
+on conflict (id) do nothing;
+
+-- Insert sample deliveries
+insert into deliveries (id, org_id, order_id, schedule_id, warehouse_id, status, delivery_date, transporter)
+values 
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'pending', '2024-02-15', 'Corriere Express'),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'prepared', '2024-02-20', 'Trasporti Sicuri')
 on conflict (id) do nothing;

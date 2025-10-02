@@ -167,7 +167,7 @@ export function DashboardPage() {
                       {orderStatusLabels[order.status] ?? order.status}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-xs text-white/60">
+                  <p className="mt-1 text-xs text-gray-500">
                     Consegna prevista {new Date(order.due_date).toLocaleDateString()}
                   </p>
                 </div>

@@ -53,7 +53,7 @@ export function ProductionSchedulesPage() {
             }}
           >
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Ordine cliente</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Ordine cliente</label>
               <Select value={selectedOrderId} onChange={(event) => setSelectedOrderId(event.target.value)}>
                 <option value="" disabled>
                   Seleziona ordine
@@ -66,7 +66,7 @@ export function ProductionSchedulesPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Riga ordine</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Riga ordine</label>
               <Select value={selectedLineId} onChange={(event) => setSelectedLineId(event.target.value)}>
                 <option value="" disabled>
                   Seleziona riga
@@ -79,11 +79,11 @@ export function ProductionSchedulesPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Linea produttiva</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Linea produttiva</label>
               <Input value={productionLine} onChange={(event) => setProductionLine(event.target.value)} />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Magazzino</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Magazzino</label>
               <Select value={warehouseId} onChange={(event) => setWarehouseId(event.target.value)}>
                 <option value="">Non assegnato</option>
                 {warehouses?.map((warehouse) => (
@@ -94,15 +94,15 @@ export function ProductionSchedulesPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Data inizio</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Data inizio</label>
               <Input type="datetime-local" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Data fine</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Data fine</label>
               <Input type="datetime-local" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Operatore</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Operatore</label>
               <Select value={operatorId} onChange={(event) => setOperatorId(event.target.value)}>
                 <option value="">Non assegnato</option>
                 {operators?.map((operator) => (

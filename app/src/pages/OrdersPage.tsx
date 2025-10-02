@@ -177,10 +177,10 @@ export function OrdersPage() {
                     {linesArray.fields.map((field, index) => {
                       const lineErrors = form.formState.errors.lines?.[index];
                       return (
-                        <div key={field.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div key={field.id} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                           <div className="grid gap-3 md:grid-cols-5">
-                            <label className="flex flex-col text-sm text-white/70">
-                              <span className="text-xs uppercase tracking-wide text-white/40">Prodotto</span>
+                            <label className="flex flex-col text-sm text-gray-700">
+                              <span className="text-xs uppercase tracking-wide text-gray-500">Prodotto</span>
                               <Select
                                 value={form.watch(`lines.${index}.product_id`)}
                                 onChange={(event) => {
@@ -263,7 +263,7 @@ export function OrdersPage() {
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="text-sm text-white/60">Da qui aggiorni lo stato di un ordine per coordinare acquisti, produzione e logistica.</p>
+            <p className="text-sm text-gray-600">Da qui aggiorni lo stato di un ordine per coordinare acquisti, produzione e logistica.</p>
           </div>
           <form
             className="flex flex-col gap-3"
@@ -307,7 +307,7 @@ export function OrdersPage() {
               <Badge variant={status === 'fulfilled' ? 'success' : status === 'cancelled' ? 'danger' : 'default'}>
                 {statusOptions.find((option) => option.value === status)?.label ?? status}
               </Badge>
-              <span className="text-base font-normal text-white/70">{entries.length} ordini</span>
+              <span className="text-base font-normal text-gray-700">{entries.length} ordini</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -382,7 +382,7 @@ export function OrdersPage() {
             </Tbody>
           </Table>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
-            <p className="mt-4 text-sm text-white/60">Nessuna consegna ancora programmata.</p>
+            <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>
           )}
         </CardContent>
       </Card>
@@ -398,8 +398,8 @@ interface FieldProps {
 
 function Field({ label, error, children }: FieldProps) {
   return (
-    <label className="flex flex-col gap-1 text-sm text-white/70">
-      <span className="text-xs uppercase tracking-wide text-white/40">{label}</span>
+    <label className="flex flex-col gap-1 text-sm text-gray-700">
+      <span className="text-xs uppercase tracking-wide text-gray-500">{label}</span>
       {children}
       {error && <span className="text-xs text-danger">{error}</span>}
     </label>

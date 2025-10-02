@@ -22,6 +22,7 @@ export async function listByOrg<T>(table: string, orgId: string, page = 1, limit
     .order('updated_at', { ascending: false });
     
   if (error) {
+    console.error(`Unknown error in listByOrg(${table}):`, error);
     handleError(error, `listByOrg(${table})`);
   }
   

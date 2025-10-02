@@ -46,7 +46,7 @@ export function ProductionProgressPage() {
             }}
           >
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">ID schedulazione</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">ID schedulazione</label>
               <Input
                 placeholder="Inserisci l'ID della schedulazione"
                 value={scheduleId}
@@ -54,7 +54,7 @@ export function ProductionProgressPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Stato</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Stato</label>
               <Select value={status} onChange={(event) => setStatus(event.target.value)}>
                 {statuses.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -64,7 +64,7 @@ export function ProductionProgressPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Quantità completata</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Quantità completata</label>
               <Input
                 type="number"
                 min={0}
@@ -73,7 +73,7 @@ export function ProductionProgressPage() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Operatore</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Operatore</label>
               <Select value={operatorId} onChange={(event) => setOperatorId(event.target.value)}>
                 <option value="">Sistema</option>
                 {operators?.map((operator) => (
@@ -84,7 +84,7 @@ export function ProductionProgressPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label className="text-xs uppercase tracking-wide text-white/60">Note</label>
+              <label className="text-xs uppercase tracking-wide text-gray-500">Note</label>
               <Input value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Annotazioni sul turno" />
             </div>
             <Button type="submit" disabled={createProgress.isPending} className="md:col-span-2">

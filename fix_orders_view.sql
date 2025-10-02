@@ -23,3 +23,8 @@ FROM customer_orders o
 LEFT JOIN customer_order_lines l ON l.order_id = o.id
 GROUP BY o.id;
 
+
+
+
+
+
