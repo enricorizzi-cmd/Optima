@@ -1,10 +1,12 @@
-﻿import { supabaseAdmin } from '../lib/supabase';
+import { supabaseAdmin } from '../lib/supabase';
 import {
   customerOrderInsertSchema,
+  customerOrderSchema,
   productionScheduleInsertSchema,
   productionProgressInsertSchema,
   deliveryInsertSchema,
   orderLineInsertSchema,
+  orderLineSchema,
   productionStatusSchema,
   deliveryStatusSchema,
 } from '../schemas/production';
@@ -14,18 +16,107 @@ const orderWithLinesSchema = customerOrderInsertSchema.extend({
   lines: z.array(orderLineInsertSchema).min(1),
 });
 
+const orderLineFromViewSchema = orderLineSchema.extend({
+  order_id: z.string().optional(),
+});
+
+const orderWithLinesResultSchema = customerOrderSchema.extend({
+  lines: z.array(orderLineFromViewSchema).optional().nullable(),
+});
+
+const orderResultListSchema = z.array(orderWithLinesResultSchema);
+
+type OrderWithNormalizedLines = z.infer<typeof customerOrderSchema> & {
+  lines: z.infer<typeof orderLineSchema>[];
+};
+
+function normalizeOrders(data: unknown): OrderWithNormalizedLines[] {
+  const parsed = orderResultListSchema.parse(data ?? []);
+  return parsed.map((order) => {
+    const lines = (order.lines ?? []).map((line) => ({
+      ...line,
+      order_id: line.order_id ?? order.id,
+    })) as z.infer<typeof orderLineSchema>[];
+
+    return {
+      ...order,
+      lines,
+    } satisfies OrderWithNormalizedLines;
+  });
+}
+
+function isMissingOrdersViewError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  if (error instanceof Error && error.message.includes('customer_orders_view')) {
+    return true;
+  }
+
+  const record = error as Record<string, unknown>;
+  const candidates = [record.message, record.details, record.hint].filter(
+    (value) => typeof value === 'string'
+  ) as string[];
+
+  return candidates.some((value) => value.includes('customer_orders_view'));
+}
+
+async function fetchOrdersFromBaseTable(orgId: string): Promise<OrderWithNormalizedLines[]> {
+  const { data, error } = await supabaseAdmin
+    .from('customer_orders')
+    .select(
+      `
+      id,
+      org_id,
+      client_id,
+      code,
+      order_date,
+      due_date,
+      status,
+      priority,
+      notes,
+      created_at,
+      updated_at,
+      lines:customer_order_lines (
+        id,
+        order_id,
+        product_id,
+        quantity,
+        unit_price,
+        unit_of_measure,
+        created_at,
+        updated_at
+      )
+    `
+    )
+    .eq('org_id', orgId)
+    .order('order_date', { ascending: false });
+
+  if (error) handleError(error);
+  return normalizeOrders(data);
+}
+
 function handleError(error: unknown): never {
   throw error instanceof Error ? error : new Error('Unknown Supabase error');
 }
 
-export async function listOrders(orgId: string) {
+export async function listOrders(orgId: string): Promise<OrderWithNormalizedLines[]> {
   const { data, error } = await supabaseAdmin
     .from('customer_orders_view')
     .select('*')
     .eq('org_id', orgId)
     .order('order_date', { ascending: false });
-  if (error) handleError(error);
-  return data;
+
+  if (!error) {
+    return normalizeOrders(data);
+  }
+
+  if (isMissingOrdersViewError(error)) {
+    return fetchOrdersFromBaseTable(orgId);
+  }
+
+  handleError(error);
 }
 
 export async function createCustomerOrder(payload: unknown) {

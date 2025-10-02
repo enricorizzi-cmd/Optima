@@ -45,7 +45,7 @@ create table if not exists raw_materials (
   unit_of_measure text not null,
   last_purchase_price numeric(12,2) default 0,
   distributors text[] default '{}',
-  default_supplier_id uuid,
+  default_supplier_id uuid references suppliers (id),
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
   unique (org_id, code)
@@ -134,6 +134,30 @@ create table if not exists clients (
 );
 create trigger trg_clients_updated_at before update on clients for each row execute function set_updated_at();
 
+-- Create suppliers table
+create table if not exists suppliers (
+  id uuid primary key default gen_random_uuid(),
+  org_id uuid not null references organizations (id) on delete cascade,
+  name text not null,
+  code text not null,
+  agent text,
+  type text not null,
+  category text not null,
+  email text,
+  phone text,
+  notes text,
+  vat_number text,
+  address text,
+  city text,
+  country text,
+  payment_terms text,
+  shipping_notes text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique (org_id, code)
+);
+create trigger trg_suppliers_updated_at before update on suppliers for each row execute function set_updated_at();
+
 -- Create customer_orders table
 create table if not exists customer_orders (
   id uuid primary key default gen_random_uuid(),
@@ -200,6 +224,12 @@ values
   ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', 'raw_material', '00000000-0000-0000-0000-000000000001', 50.000, 'kg'),
   ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'finished_product', '00000000-0000-0000-0000-000000000001', 25.000, 'pz'),
   ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', 'finished_product', '00000000-0000-0000-0000-000000000001', 15.000, 'pz')
+on conflict (id) do nothing;
+
+insert into suppliers (id, org_id, name, code, agent, type, category, email, phone)
+values 
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Fornitore A', 'SUP001', 'Agente Fornitore A', 'Azienda', 'Industriale', 'fornitore.a@example.com', '+39 111 333 4444'),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Fornitore B', 'SUP002', 'Agente Fornitore B', 'Azienda', 'Commerciale', 'fornitore.b@example.com', '+39 222 444 5555')
 on conflict (id) do nothing;
 
 insert into clients (id, org_id, name, code, agent, type, category, email, phone)

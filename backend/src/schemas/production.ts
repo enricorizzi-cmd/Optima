@@ -1,4 +1,4 @@
-﻿import { z } from 'zod';
+import { z } from 'zod';
 
 export const orderStatusSchema = z.enum(['draft', 'confirmed', 'in_production', 'fulfilled', 'cancelled']);
 export const productionStatusSchema = z.enum(['planned', 'in_progress', 'completed', 'stocked']);
@@ -18,7 +18,7 @@ export const customerOrderSchema = z.object({
   due_date: z.string(),
   status: orderStatusSchema,
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
   ...timestampFields,
 });
 
@@ -30,7 +30,7 @@ export const customerOrderInsertSchema = z.object({
   due_date: z.string(),
   status: orderStatusSchema.default('confirmed'),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 export const orderLineSchema = z.object({
@@ -84,7 +84,7 @@ export const productionProgressSchema = z.object({
   schedule_id: z.string(),
   status: productionStatusSchema,
   quantity_completed: z.number().nonnegative(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
   recorded_by: z.string(),
   recorded_at: z.string(),
   ...timestampFields,
@@ -95,7 +95,7 @@ export const productionProgressInsertSchema = z.object({
   schedule_id: z.string(),
   status: productionStatusSchema,
   quantity_completed: z.number().nonnegative(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
   recorded_by: z.string(),
   recorded_at: z.string(),
 });
@@ -108,8 +108,8 @@ export const deliverySchema = z.object({
   warehouse_id: z.string(),
   status: deliveryStatusSchema,
   delivery_date: z.string().nullable(),
-  transporter: z.string().optional(),
-  tracking_number: z.string().optional(),
+  transporter: z.string().nullable().optional(),
+  tracking_number: z.string().nullable().optional(),
   ...timestampFields,
 });
 
@@ -120,6 +120,9 @@ export const deliveryInsertSchema = z.object({
   warehouse_id: z.string(),
   status: deliveryStatusSchema.default('pending'),
   delivery_date: z.string().nullable().optional(),
-  transporter: z.string().optional(),
-  tracking_number: z.string().optional(),
+  transporter: z.string().nullable().optional(),
+  tracking_number: z.string().nullable().optional(),
 });
+
+
+

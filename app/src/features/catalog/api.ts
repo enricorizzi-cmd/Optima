@@ -119,6 +119,16 @@ export interface RawMaterialPayload {
   default_supplier_id?: string | null;
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export const catalogKeys = {
   all: ['catalog'] as const,
   clients: () => [...catalogKeys.all, 'clients'] as const,
@@ -134,7 +144,8 @@ export function useClients() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.clients(),
-    queryFn: () => request<Client[]>('/api/catalog/clients'),
+    queryFn: () => request<PaginatedResponse<Client>>('/api/catalog/clients'),
+    select: (response) => response.data || [],
   });
 }
 
@@ -142,7 +153,8 @@ export function useSuppliers() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.suppliers(),
-    queryFn: () => request<Supplier[]>('/api/catalog/suppliers'),
+    queryFn: () => request<PaginatedResponse<Supplier>>('/api/catalog/suppliers'),
+    select: (response) => response.data || [],
   });
 }
 
@@ -150,7 +162,8 @@ export function useRawMaterials() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.rawMaterials(),
-    queryFn: () => request<RawMaterial[]>('/api/catalog/raw-materials'),
+    queryFn: () => request<PaginatedResponse<RawMaterial>>('/api/catalog/raw-materials'),
+    select: (response) => response.data || [],
   });
 }
 
@@ -158,7 +171,8 @@ export function useFinishedProducts() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.finishedProducts(),
-    queryFn: () => request<FinishedProduct[]>('/api/catalog/finished-products'),
+    queryFn: () => request<PaginatedResponse<FinishedProduct>>('/api/catalog/finished-products'),
+    select: (response) => response.data || [],
   });
 }
 
@@ -166,7 +180,8 @@ export function useWarehouses() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.warehouses(),
-    queryFn: () => request<Warehouse[]>('/api/catalog/warehouses'),
+    queryFn: () => request<PaginatedResponse<Warehouse>>('/api/catalog/warehouses'),
+    select: (response) => response.data || [],
   });
 }
 
@@ -174,7 +189,8 @@ export function useOperators() {
   const { request } = useApi();
   return useQuery({
     queryKey: catalogKeys.operators(),
-    queryFn: () => request<Operator[]>('/api/catalog/operators'),
+    queryFn: () => request<PaginatedResponse<Operator>>('/api/catalog/operators'),
+    select: (response) => response.data || [],
   });
 }
 

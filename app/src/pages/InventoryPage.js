@@ -1,0 +1,12 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useInventory } from '../features/catalog/api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Table, Tbody, Td, Th, Thead, Tr } from '../components/ui/table';
+import { useState } from 'react';
+export function InventoryPage() {
+    const [filter, setFilter] = useState('all');
+    const { data: inventory } = useInventory(filter === 'all' ? undefined : filter);
+    return (_jsxs("div", { className: "grid gap-6", children: [_jsxs(Card, { children: [_jsxs(CardHeader, { children: [_jsx(CardTitle, { children: "Giacenze" }), _jsx(CardDescription, { children: "Visualizza lo stato dei magazzini tra materie prime e prodotti finiti." })] }), _jsx(CardContent, { children: _jsx("div", { className: "flex gap-2", children: ['all', 'raw_material', 'finished_product'].map((type) => (_jsx("button", { onClick: () => setFilter(type), className: `rounded-2xl border px-4 py-2 text-sm transition-colors ${filter === type
+                                    ? 'border-primary bg-primary/20 text-primary shadow-neon'
+                                    : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'}`, children: type === 'all' ? 'Tutto' : type === 'raw_material' ? 'Materie prime' : 'Prodotti finiti' }, type))) }) })] }), _jsxs(Card, { children: [_jsxs(CardHeader, { children: [_jsx(CardTitle, { children: "Dettaglio giacenze" }), _jsx(CardDescription, { children: "Dati aggiornati per magazzino e tipologia articolo." })] }), _jsxs(CardContent, { children: [_jsxs(Table, { children: [_jsx(Thead, { children: _jsxs(Tr, { children: [_jsx(Th, { children: "Item" }), _jsx(Th, { children: "Tipologia" }), _jsx(Th, { children: "Magazzino" }), _jsx(Th, { children: "Quantit\u00E0" }), _jsx(Th, { children: "UM" }), _jsx(Th, { children: "Aggiornato" })] }) }), _jsx(Tbody, { children: inventory?.map((item) => (_jsxs(Tr, { children: [_jsx(Td, { children: item.item_id }), _jsx(Td, { children: item.item_type === 'raw_material' ? 'Materia prima' : 'Prodotto finito' }), _jsx(Td, { children: item.warehouse_id }), _jsx(Td, { children: item.quantity.toLocaleString('it-IT') }), _jsx(Td, { children: item.unit_of_measure }), _jsx(Td, { children: new Date(item.updated_at).toLocaleString('it-IT') })] }, item.id))) })] }), inventory && inventory.length === 0 && (_jsx("p", { className: "mt-4 text-sm text-white/60", children: "Nessuna giacenza caricata per il filtro selezionato." }))] })] })] }));
+}

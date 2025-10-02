@@ -1,8 +1,8 @@
-﻿import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from './toast';
 import { ToastContext, type ToastInput, type ToastMessage } from './use-toast';
 
-export function Toaster() {
+export function Toaster({ children }: PropsWithChildren) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const dismiss = useCallback((id?: string) => {
@@ -23,6 +23,7 @@ export function Toaster() {
 
   return (
     <ToastContext.Provider value={contextValue}>
+      {children}
       <ToastProvider swipeDirection="right" duration={5000}>
         {toasts.map((toastItem) => (
           <Toast
