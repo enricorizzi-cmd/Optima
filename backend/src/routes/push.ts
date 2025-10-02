@@ -14,7 +14,7 @@ export async function registerPushRoutes(app: FastifyInstance) {
         response: { 201: z.object({ id: z.string(), endpoint: z.string().url() }) },
       },
     }, async (request, reply) => {
-      const saved = await saveSubscription(request.user.orgId, request.user.id, request.body.subscription);
+      const saved = await saveSubscription(request.user.orgId, request.user.id, (request.body as any).subscription);
       reply.code(201);
       return { id: saved.id, endpoint: saved.endpoint };
     });
@@ -25,9 +25,9 @@ export async function registerPushRoutes(app: FastifyInstance) {
         response: { 202: z.object({ status: z.literal('queued') }) },
       },
     }, async (request, reply) => {
-      await sendTestNotification(request.body.subscription_id, request.user.orgId, {
-        title: request.body.title,
-        body: request.body.body,
+      await sendTestNotification((request.body as any).subscription_id, request.user.orgId, {
+        title: (request.body as any).title,
+        body: (request.body as any).body,
       });
       reply.code(202);
       return { status: 'queued' as const };

@@ -82,7 +82,7 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 200: customerOrderSchema },
       },
     }, async (request) => {
-      return updateOrderStatus(request.params.id, request.user.orgId, request.body.status);
+      return updateOrderStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
     });
 
     fastify.post('/api/production/schedules', {
@@ -103,7 +103,7 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 200: productionScheduleSchema },
       },
     }, async (request) => {
-      return updateScheduleStatus(request.params.id, request.user.orgId, request.body.status);
+      return updateScheduleStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
     });
 
     fastify.post('/api/production/progress', {
@@ -135,7 +135,7 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 200: deliverySchema },
       },
     }, async (request) => {
-      return updateDeliveryStatus(request.params.id, request.user.orgId, request.body.status);
+      return updateDeliveryStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
     });
   });
 }
