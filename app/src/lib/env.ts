@@ -1,7 +1,7 @@
 ﻿export const env = {
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL as string,
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
-  backendUrl: import.meta.env.VITE_BACKEND_URL as string,
+  backendUrl: '/api', // Use local API endpoint
   vapidPublicKey: import.meta.env.VITE_VAPID_PUBLIC_KEY as string | undefined,
 };
 

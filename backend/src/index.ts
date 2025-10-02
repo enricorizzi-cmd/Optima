@@ -12,7 +12,7 @@ import { registerHealthRoutes } from './routes/health';
 import { logger } from './lib/logger';
 import { getEnv } from './lib/env';
 
-async function buildServer() {
+export async function buildServer() {
   const app = Fastify({
     logger,
   });
@@ -49,5 +49,3 @@ async function start() {
 if (typeof require !== 'undefined' && require.main === module) {
   start();
 }
-
-export { buildServer };

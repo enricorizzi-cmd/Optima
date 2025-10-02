@@ -4,31 +4,47 @@ import express from 'express';
 import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 import { buildServer } from './backend/dist/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const server = createServer(app);
 
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Create Fastify app for API
 const fastifyApp = await buildServer();
+
 // Mount Fastify on Express at /api
-app.use('/api', (req, res, next) => {
-  // Convert Express req/res to Fastify format
-  fastifyApp.inject({
-    method: req.method,
-    url: req.url,
-    payload: req.body,
-    cookies: req.headers.cookie,
-  }, (err, reply) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.status(reply.statusCode);
-    Object.assign(res.getHeaders(), Object.fromEntries(reply.headers || []));
-    res.end(reply.payload);
-  });
+app.use('/api', async (req, res, next) => {
+  try {
+    // Convert Express req/res to Fastify format
+    const result = await fastifyApp.inject({
+      method: req.method,
+      url: req.url,
+      payload: req.body,
+      headers: req.headers,
+      cookies: req.headers.cookie ? { cookie: req.headers.cookie } : undefined,
+    });
+
+    // Copy response
+    res.status(result.statusCode);
+    
+    // Copy headers (excluding content-length which will be set automatically)
+    Object.entries(result.headers || {}).forEach(([key, value]) => {
+      if (key.toLowerCase() !== 'content-length') {
+        res.set(key, value);
+      }
+    });
+    
+    res.end(result.payload);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Serve static frontend files
@@ -43,7 +59,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Optima Fullstack server listening on port ${PORT}`);
