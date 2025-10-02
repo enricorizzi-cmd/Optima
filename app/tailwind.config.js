@@ -1,6 +1,8 @@
-﻿const { fontFamily } = require('tailwindcss/defaultTheme');
+import { fontFamily } from 'tailwindcss/defaultTheme';
+import tailwindForms from '@tailwindcss/forms';
+import tailwindTypography from '@tailwindcss/typography';
 
-module.exports = {
+export default {
   darkMode: 'class',
   content: ['./index.html', './src/**/*.{ts,tsx,html}'],
   theme: {
@@ -26,5 +28,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+  plugins: [tailwindForms, tailwindTypography],
 };
