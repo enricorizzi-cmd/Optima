@@ -21,7 +21,6 @@ async function buildServer() {
   app.setSerializerCompiler(serializerCompiler);
 
   await app.register(securityPlugin);
-  await app.register(securityPlugin);
   await app.register(registerHealthRoutes);
   await app.register(registerAuthRoutes);
   await app.register(authPlugin);
