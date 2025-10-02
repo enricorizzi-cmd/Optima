@@ -9,7 +9,25 @@ import { createQueryClient } from './lib/queryClient';
 import { env } from './lib/env';
 import './styles/tailwind.css';
 
-const supabaseClient = createClient(env.supabaseUrl, env.supabaseAnonKey);
+const supabaseClient = createClient(
+  env.supabaseUrl, 
+  env.supabaseAnonKey,
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    },
+    global: {
+      headers: {
+        'apikey': env.supabaseAnonKey,
+        'Authorization': `Bearer ${env.supabaseAnonKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      }
+    }
+  }
+);
 const queryClient = createQueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
