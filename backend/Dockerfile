@@ -2,17 +2,17 @@
 FROM node:20-alpine
 
 # Set working directory
-WORKDIR /opt/render/project/src/backend
+WORKDIR /opt/render/project/src
 
 # Copy package files
-COPY backend/package*.json ./
-COPY backend/tsconfig*.json ./
+COPY package*.json ./
+COPY tsconfig*.json ./
 
 # Install dependencies (including dev dependencies for build)
 RUN npm ci
 
 # Copy source code
-COPY backend/src/ ./src/
+COPY src/ ./src/
 
 # Build the application
 RUN npm run build
