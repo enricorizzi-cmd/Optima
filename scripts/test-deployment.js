@@ -17,6 +17,12 @@ const services = [
     expected: 'HTML content'
   },
   {
+    name: 'Backend',
+    url: 'https://optima-backend-h0z2.onrender.com',
+    expected: 'API responses',
+    endpoints: ['/health', '/healthz']
+  },
+  {
     name: 'Database',
     id: 'dpg-d3f75j95pdvs73cjc3a0-a',
     type: 'postgres',
@@ -74,10 +80,40 @@ async function testFrontend() {
   }
 }
 
+// Test backend
+async function testBackend() {
+  console.log('🔧 Testing Backend...');
+  const backendService = services[1];
+  
+  try {
+    // Test main health endpoint
+    const response = await makeRequest(`${backendService.url}/health`);
+    
+    if (response.status === 200) {
+      console.log('  ✅ Backend is accessible');
+      console.log(`  📊 Status: ${response.status}`);
+      console.log(`  🔧 Content-Type: ${response.headers['content-type']}`);
+      
+      // Show response content
+      if (response.data) {
+        console.log(`  📋 Response: ${response.data.substring(0, 100)}...`);
+      }
+      return true;
+    } else {
+      console.log(`  ❌ Backend returned status: ${response.status}`);
+      return false;
+    }
+  } catch (error) {
+    console.log(`  ❌ Backend error: ${error.message}`);
+    console.log('  ⚠️  Backend might still be deploying...');
+    return false;
+  }
+}
+
 // Test database status
 function testDatabase() {
   console.log('🗄️  Testing Database...');
-  const dbService = services[1];
+  const dbService = services[2]; // Index changed due to backend addition
   
   if (dbService.status === 'available') {
     console.log('  ✅ Database is available');
@@ -97,6 +133,7 @@ async function runTests() {
   const results = [];
   
   results.push(await testFrontend());
+  results.push(await testBackend());
   results.push(testDatabase());
   
   console.log('\n📊 Test Results:');
@@ -110,10 +147,13 @@ async function runTests() {
   if (passed === total) {
     console.log('🎉 All services are working!');
     console.log('\n📋 Next Steps:');
-    console.log('  1. Complete backend deployment on Render');
+    console.log('  1. ✅ Backend deployed and accessible');
     console.log('  2. Update VITE_BACKEND_URL in frontend');
     console.log('  3. Run database migrations');
     console.log('  4. Test complete application flow');
+  } else if (passed === 2) {
+    console.log('🎯 Almost there! Frontend + Database working');
+    console.log('⏳ Backend deployment in progress...');
   } else {
     console.log('⚠️  Some services need attention');
   }
