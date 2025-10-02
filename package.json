@@ -15,7 +15,11 @@
     "lint": "npm run lint -w backend && npm run lint -w app",
     "test": "npm run test -w backend && npm run test -w app",
     "format": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "migrate": "node scripts/migrate.js",
+    "update-backend-url": "node scripts/update-backend-url.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
