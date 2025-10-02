@@ -99,7 +99,7 @@ async function resolveOrgId(userId: string, orgIdentifier?: string) {
           role: 'viewer',
           full_name: 'User'
         })
-        .select('id', 'org_id', 'role')
+        .select('id,org_id,role')
         .single();
       
       if (createError) {
