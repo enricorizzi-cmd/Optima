@@ -8,8 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig*.json ./
 
-# Install dependencies
-RUN npm ci --include=dev
+# Install dependencies (including dev for build)
+RUN npm install
 
 # Copy source code
 COPY src/ ./src/
@@ -17,8 +17,8 @@ COPY src/ ./src/
 # Build TypeScript
 RUN npm run build
 
-# Install production dependencies only
-RUN npm ci --omit=dev
+# Clean up node_modules and reinstall production only
+RUN rm -rf node_modules && npm install --production
 
 # Expose port
 EXPOSE 4000
