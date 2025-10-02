@@ -2,14 +2,16 @@
 import { featureSchema } from '../schemas/features';
 import { z } from 'zod';
 
-export async function listOrgFeatures(orgId: string) {
+type Feature = z.infer<typeof featureSchema>;
+
+export async function listOrgFeatures(orgId: string): Promise<Feature[]> {
   const { data, error } = await supabaseAdmin
-    .from<z.infer<typeof featureSchema>>('features')
+    .from('features')
     .select('*')
     .eq('org_id', orgId)
     .order('key');
   if (error) {
     throw error;
   }
-  return data;
+  return (data ?? []) as Feature[];
 }

@@ -44,7 +44,7 @@ async function start() {
 }
 
 // Start the server when this file is run directly
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('index.ts')) {
+if (typeof require !== 'undefined' && require.main === module) {
   start();
 }
 

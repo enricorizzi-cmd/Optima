@@ -1,4 +1,4 @@
-﻿import fp from 'fastify-plugin';
+import fp from 'fastify-plugin';
 import helmet from '@fastify/helmet';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
@@ -34,21 +34,25 @@ export default fp(async (fastify) => {
   });
 
   // Stricter rate limiting for sensitive operations - more permissive for development
-  await fastify.register(rateLimit, {
-    max: 100,
-    timeWindow: '1 minute',
-    keyGenerator: (request) => {
-      const user = (request as any).user;
-      return user ? `${user.id}-sensitive` : request.ip;
-    },
+  await fastify.register(async (scopedFastify) => {
+    await scopedFastify.register(rateLimit, {
+      max: 100,
+      timeWindow: '1 minute',
+      keyGenerator: (request) => {
+        const user = (request as any).user;
+        return user ? `${user.id}-sensitive` : request.ip;
+      },
+    });
   }, { prefix: '/api/orders' });
 
-  await fastify.register(rateLimit, {
-    max: 50,
-    timeWindow: '1 minute',
-    keyGenerator: (request) => {
-      const user = (request as any).user;
-      return user ? `${user.id}-production` : request.ip;
-    },
+  await fastify.register(async (scopedFastify) => {
+    await scopedFastify.register(rateLimit, {
+      max: 50,
+      timeWindow: '1 minute',
+      keyGenerator: (request) => {
+        const user = (request as any).user;
+        return user ? `${user.id}-production` : request.ip;
+      },
+    });
   }, { prefix: '/api/production' });
 });

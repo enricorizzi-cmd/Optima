@@ -10,12 +10,12 @@ function handleError(error: unknown, context: string): never {
   throw new Error(`Unknown error in ${context}`);
 }
 
-export async function listByOrg<T>(table: string, orgId: string, page = 1, limit = 50) {
+export async function listByOrg<T>(table: string, orgId: string, page = 1, limit = 50) : Promise<{ data: T[]; pagination: { page: number; limit: number; total: number; totalPages: number; }; }> {
   const from = (page - 1) * limit;
   const to = from + limit - 1;
   
   const { data, error, count } = await supabaseAdmin
-    .from<T>(table)
+    .from(table)
     .select('*', { count: 'exact' })
     .eq('org_id', orgId)
     .range(from, to)
@@ -25,9 +25,11 @@ export async function listByOrg<T>(table: string, orgId: string, page = 1, limit
     console.error(`Unknown error in listByOrg(${table}):`, error);
     handleError(error, `listByOrg(${table})`);
   }
-  
+
+  const rows = (data ?? []) as T[];
+
   return {
-    data: data || [],
+    data: rows,
     pagination: {
       page,
       limit,

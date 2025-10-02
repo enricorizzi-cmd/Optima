@@ -33,6 +33,20 @@ export async function registerProductionRoutes(app: FastifyInstance) {
     lines: z.array(orderLineInsertSchema).min(1),
   });
 
+  const idParamSchema = z.object({ id: z.string().uuid() });
+  type IdParams = z.infer<typeof idParamSchema>;
+
+  const orderStatusBodySchema = z.object({
+    status: z.union([productionStatusSchema, z.enum(['fulfilled', 'cancelled'])]),
+  });
+  type OrderStatusBody = z.infer<typeof orderStatusBodySchema>;
+
+  const scheduleStatusBodySchema = z.object({ status: productionStatusSchema });
+  type ScheduleStatusBody = z.infer<typeof scheduleStatusBodySchema>;
+
+  const deliveryStatusBodySchema = z.object({ status: deliveryStatusSchema });
+  type DeliveryStatusBody = z.infer<typeof deliveryStatusBodySchema>;
+
   app.withTypeProvider<ZodTypeProvider>().register(async (fastify) => {
     fastify.addHook('preHandler', fastify.authenticate);
 
@@ -70,19 +84,22 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 201: customerOrderSchema },
       },
     }, async (request, reply) => {
-      const created = await createCustomerOrder({ ...request.body, org_id: request.user.orgId });
+      const body = request.body as Record<string, unknown>;
+      const created = await createCustomerOrder({ ...body, org_id: request.user.orgId });
       reply.code(201);
       return created;
     });
 
     fastify.patch('/api/orders/:id/status', {
       schema: {
-        params: z.object({ id: z.string().uuid() }),
-        body: z.object({ status: z.union([productionStatusSchema, z.enum(['fulfilled', 'cancelled'])]) }),
+        params: idParamSchema,
+        body: orderStatusBodySchema,
         response: { 200: customerOrderSchema },
       },
     }, async (request) => {
-      return updateOrderStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
+      const { id } = request.params as IdParams;
+      const { status } = request.body as OrderStatusBody;
+      return updateOrderStatus(id, request.user.orgId, status);
     });
 
     fastify.post('/api/production/schedules', {
@@ -91,19 +108,22 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 201: productionScheduleSchema },
       },
     }, async (request, reply) => {
-      const created = await scheduleProduction({ ...request.body, org_id: request.user.orgId });
+      const body = request.body as Record<string, unknown>;
+      const created = await scheduleProduction({ ...body, org_id: request.user.orgId });
       reply.code(201);
       return created;
     });
 
     fastify.patch('/api/production/schedules/:id/status', {
       schema: {
-        params: z.object({ id: z.string().uuid() }),
-        body: z.object({ status: productionStatusSchema }),
+        params: idParamSchema,
+        body: scheduleStatusBodySchema,
         response: { 200: productionScheduleSchema },
       },
     }, async (request) => {
-      return updateScheduleStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
+      const { id } = request.params as IdParams;
+      const { status } = request.body as ScheduleStatusBody;
+      return updateScheduleStatus(id, request.user.orgId, status);
     });
 
     fastify.post('/api/production/progress', {
@@ -112,7 +132,8 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 201: productionProgressSchema },
       },
     }, async (request, reply) => {
-      const created = await recordProductionProgress({ ...request.body, org_id: request.user.orgId });
+      const body = request.body as Record<string, unknown>;
+      const created = await recordProductionProgress({ ...body, org_id: request.user.orgId });
       reply.code(201);
       return created;
     });
@@ -123,19 +144,22 @@ export async function registerProductionRoutes(app: FastifyInstance) {
         response: { 201: deliverySchema },
       },
     }, async (request, reply) => {
-      const created = await recordDelivery({ ...request.body, org_id: request.user.orgId });
+      const body = request.body as Record<string, unknown>;
+      const created = await recordDelivery({ ...body, org_id: request.user.orgId });
       reply.code(201);
       return created;
     });
 
     fastify.patch('/api/deliveries/:id/status', {
       schema: {
-        params: z.object({ id: z.string().uuid() }),
-        body: z.object({ status: deliveryStatusSchema }),
+        params: idParamSchema,
+        body: deliveryStatusBodySchema,
         response: { 200: deliverySchema },
       },
     }, async (request) => {
-      return updateDeliveryStatus((request.params as any).id, request.user.orgId, (request.body as any).status);
+      const { id } = request.params as IdParams;
+      const { status } = request.body as DeliveryStatusBody;
+      return updateDeliveryStatus(id, request.user.orgId, status);
     });
   });
 }
