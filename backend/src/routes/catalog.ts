@@ -155,7 +155,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 200: supplierSchema },
       },
     }, async (request) => {
-      return updateSupplier(request.params.id, request.user.orgId, request.body);
+      return updateSupplier((request.params as any).id, request.user.orgId, request.body);
     });
 
     fastify.delete('/api/catalog/suppliers/:id', {
@@ -164,7 +164,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 204: z.null() },
       },
     }, async (request, reply) => {
-      await deleteById('suppliers', request.params.id, request.user.orgId);
+      await deleteById('suppliers', (request.params as any).id, request.user.orgId);
       reply.code(204);
       return null;
     });
@@ -210,7 +210,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 200: rawMaterialSchema },
       },
     }, async (request) => {
-      return updateRawMaterial(request.params.id, request.user.orgId, request.body);
+      return updateRawMaterial((request.params as any).id, request.user.orgId, request.body);
     });
 
     fastify.get('/api/catalog/finished-products', {
@@ -254,7 +254,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 200: finishedProductSchema },
       },
     }, async (request) => {
-      return updateFinishedProduct(request.params.id, request.user.orgId, request.body);
+      return updateFinishedProduct((request.params as any).id, request.user.orgId, request.body);
     });
 
     fastify.get('/api/catalog/warehouses', {
@@ -298,7 +298,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 200: warehouseSchema },
       },
     }, async (request) => {
-      return updateWarehouse(request.params.id, request.user.orgId, request.body);
+      return updateWarehouse((request.params as any).id, request.user.orgId, request.body);
     });
 
     fastify.get('/api/catalog/operators', {
@@ -342,7 +342,7 @@ export async function registerCatalogRoutes(app: FastifyInstance) {
         response: { 200: operatorSchema },
       },
     }, async (request) => {
-      return updateOperator(request.params.id, request.user.orgId, request.body);
+      return updateOperator((request.params as any).id, request.user.orgId, request.body);
     });
 
     fastify.put('/api/catalog/inventory', {
