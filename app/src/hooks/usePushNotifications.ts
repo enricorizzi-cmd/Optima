@@ -39,6 +39,14 @@ export function usePushNotifications() {
       }
 
       const registration = await navigator.serviceWorker.ready;
+      
+      // Annulla le sottoscrizioni esistenti prima di crearne una nuova
+      // Questo risolve il problema delle chiavi VAPID obsolete nella cache del browser
+      const existingSubscriptions = await registration.pushManager.getSubscriptions();
+      for (const oldSubscription of existingSubscriptions) {
+        await oldSubscription.unsubscribe();
+      }
+
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(env.vapidPublicKey),
