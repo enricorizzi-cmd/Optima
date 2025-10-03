@@ -17,7 +17,14 @@ import { Button } from '../components/ui/button';
 import { Select } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../components/ui/dialog';
 import { useToast } from '../components/ui/use-toast';
 
 const priorities = [
@@ -37,8 +44,12 @@ const orderFormSchema = z.object({
     .array(
       z.object({
         product_id: z.string().min(1, 'Seleziona un prodotto'),
-        quantity: z.coerce.number({ invalid_type_error: 'Inserisci una quantita' }).min(0.01, 'Quantita non valida'),
-        unit_price: z.coerce.number({ invalid_type_error: 'Inserisci un prezzo' }).min(0, 'Prezzo non valido'),
+        quantity: z.coerce
+          .number({ invalid_type_error: 'Inserisci una quantita' })
+          .min(0.01, 'Quantita non valida'),
+        unit_price: z.coerce
+          .number({ invalid_type_error: 'Inserisci un prezzo' })
+          .min(0, 'Prezzo non valido'),
         unit_of_measure: z.string().min(1, 'Campo obbligatorio'),
       })
     )
@@ -61,7 +72,7 @@ export function OrdersPage() {
   const { data: finishedProducts } = useFinishedProducts();
   const deliveriesQuery = useDeliveries();
   const updateStatus = useUpdateOrderStatus();
-    const updateDeliveryStatus = useUpdateDeliveryStatus();
+  const updateDeliveryStatus = useUpdateDeliveryStatus();
   const createOrder = useCreateOrder();
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -95,21 +106,31 @@ export function OrdersPage() {
   const handleCreateOrder = form.handleSubmit((values) => {
     createOrder.mutate(values, {
       onSuccess: () => {
-        toast({ title: 'Ordine creato', description: 'Ordine cliente registrato', variant: 'success' });
+        toast({
+          title: 'Ordine creato',
+          description: 'Ordine cliente registrato',
+          variant: 'success',
+        });
         setOrderDialogOpen(false);
         form.reset();
       },
       onError: (error) => {
-        toast({ title: 'Errore creazione ordine', description: error.message, variant: 'destructive' });
+        toast({
+          title: 'Errore creazione ordine',
+          description: error.message,
+          variant: 'destructive',
+        });
       },
     });
   });
 
   const groupedOrders = useMemo(() => {
-    return orders?.reduce<Record<string, typeof orders>>((acc, order) => {
-      acc[order.status] = acc[order.status] ? [...acc[order.status]!, order] : [order];
-      return acc;
-    }, {}) ?? {};
+    return (
+      orders?.reduce<Record<string, typeof orders>>((acc, order) => {
+        acc[order.status] = acc[order.status] ? [...acc[order.status]!, order] : [order];
+        return acc;
+      }, {}) ?? {}
+    );
   }, [orders]);
 
   return (
@@ -118,9 +139,17 @@ export function OrdersPage() {
         <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <CardTitle>Ordini clienti</CardTitle>
-            <CardDescription>Pianifica e monitora ogni commessa dal ricevimento alla consegna.</CardDescription>
+            <CardDescription>
+              Pianifica e monitora ogni commessa dal ricevimento alla consegna.
+            </CardDescription>
           </div>
-          <Dialog open={orderDialogOpen} onOpenChange={(open) => { setOrderDialogOpen(open); if (!open) form.reset(); }}>
+          <Dialog
+            open={orderDialogOpen}
+            onOpenChange={(open) => {
+              setOrderDialogOpen(open);
+              if (!open) form.reset();
+            }}
+          >
             <DialogTrigger asChild>
               <Button>Nuovo ordine</Button>
             </DialogTrigger>
@@ -141,13 +170,28 @@ export function OrdersPage() {
                     </Select>
                   </Field>
                   <Field label="Codice ordine" error={form.formState.errors.code?.message}>
-                    <Input placeholder="ORD-2025-001" {...form.register('code')} disabled={createOrder.isPending} />
+                    <Input
+                      placeholder="ORD-2025-001"
+                      {...form.register('code')}
+                      disabled={createOrder.isPending}
+                    />
                   </Field>
                   <Field label="Data ordine" error={form.formState.errors.order_date?.message}>
-                    <Input type="date" {...form.register('order_date')} disabled={createOrder.isPending} />
+                    <Input
+                      type="date"
+                      {...form.register('order_date')}
+                      disabled={createOrder.isPending}
+                    />
                   </Field>
-                  <Field label="Data consegna prevista" error={form.formState.errors.due_date?.message}>
-                    <Input type="date" {...form.register('due_date')} disabled={createOrder.isPending} />
+                  <Field
+                    label="Data consegna prevista"
+                    error={form.formState.errors.due_date?.message}
+                  >
+                    <Input
+                      type="date"
+                      {...form.register('due_date')}
+                      disabled={createOrder.isPending}
+                    />
                   </Field>
                   <Field label="Priorita">
                     <Select {...form.register('priority')} disabled={createOrder.isPending}>
@@ -160,13 +204,24 @@ export function OrdersPage() {
                   </Field>
                 </div>
                 <Field label="Note">
-                  <Textarea rows={3} placeholder="Indicazioni operative" {...form.register('notes')} disabled={createOrder.isPending} />
+                  <Textarea
+                    rows={3}
+                    placeholder="Indicazioni operative"
+                    {...form.register('notes')}
+                    disabled={createOrder.isPending}
+                  />
                 </Field>
 
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-display text-lg text-white">Righe ordine</h3>
-                    <Button type="button" variant="secondary" size="sm" onClick={handleAddLine} disabled={createOrder.isPending}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleAddLine}
+                      disabled={createOrder.isPending}
+                    >
                       Aggiungi riga
                     </Button>
                   </div>
@@ -177,18 +232,30 @@ export function OrdersPage() {
                     {linesArray.fields.map((field, index) => {
                       const lineErrors = form.formState.errors.lines?.[index];
                       return (
-                        <div key={field.id} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                        <div
+                          key={field.id}
+                          className="rounded-2xl border border-gray-200 bg-gray-50 p-4"
+                        >
                           <div className="grid gap-3 md:grid-cols-5">
                             <label className="flex flex-col text-sm text-gray-700">
-                              <span className="text-xs uppercase tracking-wide text-gray-500">Prodotto</span>
+                              <span className="text-xs uppercase tracking-wide text-gray-500">
+                                Prodotto
+                              </span>
                               <Select
                                 value={form.watch(`lines.${index}.product_id`)}
                                 onChange={(event) => {
                                   const productId = event.target.value;
-                                  form.setValue(`lines.${index}.product_id`, productId, { shouldValidate: true });
-                                  const product = finishedProducts?.find((item) => item.id === productId);
+                                  form.setValue(`lines.${index}.product_id`, productId, {
+                                    shouldValidate: true,
+                                  });
+                                  const product = finishedProducts?.find(
+                                    (item) => item.id === productId
+                                  );
                                   if (product) {
-                                    form.setValue(`lines.${index}.unit_of_measure`, product.unit_of_measure);
+                                    form.setValue(
+                                      `lines.${index}.unit_of_measure`,
+                                      product.unit_of_measure
+                                    );
                                   }
                                 }}
                                 disabled={createOrder.isPending}
@@ -201,7 +268,9 @@ export function OrdersPage() {
                                 ))}
                               </Select>
                               {lineErrors?.product_id?.message && (
-                                <span className="text-xs text-danger">{lineErrors.product_id.message}</span>
+                                <span className="text-xs text-danger">
+                                  {lineErrors.product_id.message}
+                                </span>
                               )}
                             </label>
                             <Field label="Quantita" error={lineErrors?.quantity?.message}>
@@ -209,7 +278,9 @@ export function OrdersPage() {
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                {...form.register(`lines.${index}.quantity`, { valueAsNumber: true })}
+                                {...form.register(`lines.${index}.quantity`, {
+                                  valueAsNumber: true,
+                                })}
                                 disabled={createOrder.isPending}
                               />
                             </Field>
@@ -218,7 +289,9 @@ export function OrdersPage() {
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                {...form.register(`lines.${index}.unit_price`, { valueAsNumber: true })}
+                                {...form.register(`lines.${index}.unit_price`, {
+                                  valueAsNumber: true,
+                                })}
                                 disabled={createOrder.isPending}
                               />
                             </Field>
@@ -263,7 +336,9 @@ export function OrdersPage() {
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="text-sm text-gray-600">Da qui aggiorni lo stato di un ordine per coordinare acquisti, produzione e logistica.</p>
+            <p className="text-sm text-gray-600">
+              Da qui aggiorni lo stato di un ordine per coordinare acquisti, produzione e logistica.
+            </p>
           </div>
           <form
             className="flex flex-col gap-3"
@@ -295,7 +370,9 @@ export function OrdersPage() {
             <Button type="submit" disabled={updateStatus.isPending}>
               Aggiorna stato
             </Button>
-            {updateStatus.isSuccess && <p className="text-xs text-success">Stato aggiornato con successo.</p>}
+            {updateStatus.isSuccess && (
+              <p className="text-xs text-success">Stato aggiornato con successo.</p>
+            )}
           </form>
         </CardContent>
       </Card>
@@ -304,7 +381,11 @@ export function OrdersPage() {
         <Card key={status}>
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
-              <Badge variant={status === 'fulfilled' ? 'success' : status === 'cancelled' ? 'danger' : 'default'}>
+              <Badge
+                variant={
+                  status === 'fulfilled' ? 'success' : status === 'cancelled' ? 'danger' : 'default'
+                }
+              >
                 {statusOptions.find((option) => option.value === status)?.label ?? status}
               </Badge>
               <span className="text-base font-normal text-gray-700">{entries.length} ordini</span>
@@ -313,31 +394,39 @@ export function OrdersPage() {
           <CardContent>
             <div className="overflow-x-auto">
               <Table>
-              <Thead>
-                <Tr>
-                  <Th>Codice</Th>
-                  <Th>Cliente</Th>
-                  <Th>Consegna</Th>
-                  <Th>Priorita</Th>
-                  <Th>Righe prodotto</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {entries.map((order) => (
-                  <Tr key={order.id}>
-                    <Td>{order.code}</Td>
-                    <Td>{order.client_id}</Td>
-                    <Td>{new Date(order.due_date).toLocaleDateString()}</Td>
-                    <Td>
-                      <Badge variant={order.priority === 'high' ? 'danger' : order.priority === 'medium' ? 'warning' : 'outline'}>
-                        {order.priority}
-                      </Badge>
-                    </Td>
-                    <Td>{order.lines?.length ?? 0}</Td>
+                <Thead>
+                  <Tr>
+                    <Th>Codice</Th>
+                    <Th>Cliente</Th>
+                    <Th>Consegna</Th>
+                    <Th>Priorita</Th>
+                    <Th>Righe prodotto</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {entries.map((order) => (
+                    <Tr key={order.id}>
+                      <Td>{order.code}</Td>
+                      <Td>{order.client_id}</Td>
+                      <Td>{new Date(order.due_date).toLocaleDateString()}</Td>
+                      <Td>
+                        <Badge
+                          variant={
+                            order.priority === 'high'
+                              ? 'danger'
+                              : order.priority === 'medium'
+                                ? 'warning'
+                                : 'outline'
+                          }
+                        >
+                          {order.priority}
+                        </Badge>
+                      </Td>
+                      <Td>{order.lines?.length ?? 0}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
             </div>
           </CardContent>
         </Card>
@@ -351,39 +440,42 @@ export function OrdersPage() {
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
-            <Thead>
-              <Tr>
-                <Th>Ordine</Th>
-                <Th>Schedulazione</Th>
-                <Th>Magazzino</Th>
-                <Th>Stato</Th>
-                <Th>Tracking</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {deliveriesQuery.data?.map((delivery) => (
-                <Tr key={delivery.id}>
-                  <Td>{delivery.order_id}</Td>
-                  <Td>{delivery.schedule_id}</Td>
-                  <Td>{delivery.warehouse_id}</Td>
-                  <Td>
-                    <Select
-                      value={delivery.status}
-                      onChange={(event) =>
-                        updateDeliveryStatus.mutate({ id: delivery.id, status: event.target.value as any })
-                      }
-                    >
-                      <option value="pending">In attesa</option>
-                      <option value="prepared">Preparato</option>
-                      <option value="shipped">Spedito</option>
-                      <option value="delivered">Consegnato</option>
-                    </Select>
-                  </Td>
-                  <Td>{delivery.tracking_number ?? '-'}</Td>
+              <Thead>
+                <Tr>
+                  <Th>Ordine</Th>
+                  <Th>Schedulazione</Th>
+                  <Th>Magazzino</Th>
+                  <Th>Stato</Th>
+                  <Th>Tracking</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {deliveriesQuery.data?.map((delivery) => (
+                  <Tr key={delivery.id}>
+                    <Td>{delivery.order_id}</Td>
+                    <Td>{delivery.schedule_id}</Td>
+                    <Td>{delivery.warehouse_id}</Td>
+                    <Td>
+                      <Select
+                        value={delivery.status}
+                        onChange={(event) =>
+                          updateDeliveryStatus.mutate({
+                            id: delivery.id,
+                            status: event.target.value as any,
+                          })
+                        }
+                      >
+                        <option value="pending">In attesa</option>
+                        <option value="prepared">Preparato</option>
+                        <option value="shipped">Spedito</option>
+                        <option value="delivered">Consegnato</option>
+                      </Select>
+                    </Td>
+                    <Td>{delivery.tracking_number ?? '-'}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </div>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
             <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>
@@ -409,5 +501,3 @@ function Field({ label, error, children }: FieldProps) {
     </label>
   );
 }
-
-

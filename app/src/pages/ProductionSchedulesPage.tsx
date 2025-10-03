@@ -30,7 +30,9 @@ export function ProductionSchedulesPage() {
       <Card>
         <CardHeader>
           <CardTitle>Programmazione produzione</CardTitle>
-          <CardDescription>Pianifica lotti a partire dagli ordini confermati e assegna risorse chiave.</CardDescription>
+          <CardDescription>
+            Pianifica lotti a partire dagli ordini confermati e assegna risorse chiave.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -53,8 +55,13 @@ export function ProductionSchedulesPage() {
             }}
           >
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-gray-500">Ordine cliente</label>
-              <Select value={selectedOrderId} onChange={(event) => setSelectedOrderId(event.target.value)}>
+              <label className="text-xs uppercase tracking-wide text-gray-500">
+                Ordine cliente
+              </label>
+              <Select
+                value={selectedOrderId}
+                onChange={(event) => setSelectedOrderId(event.target.value)}
+              >
                 <option value="" disabled>
                   Seleziona ordine
                 </option>
@@ -67,7 +74,10 @@ export function ProductionSchedulesPage() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-wide text-gray-500">Riga ordine</label>
-              <Select value={selectedLineId} onChange={(event) => setSelectedLineId(event.target.value)}>
+              <Select
+                value={selectedLineId}
+                onChange={(event) => setSelectedLineId(event.target.value)}
+              >
                 <option value="" disabled>
                   Seleziona riga
                 </option>
@@ -79,8 +89,13 @@ export function ProductionSchedulesPage() {
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-gray-500">Linea produttiva</label>
-              <Input value={productionLine} onChange={(event) => setProductionLine(event.target.value)} />
+              <label className="text-xs uppercase tracking-wide text-gray-500">
+                Linea produttiva
+              </label>
+              <Input
+                value={productionLine}
+                onChange={(event) => setProductionLine(event.target.value)}
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-wide text-gray-500">Magazzino</label>
@@ -95,11 +110,19 @@ export function ProductionSchedulesPage() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-wide text-gray-500">Data inizio</label>
-              <Input type="datetime-local" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+              <Input
+                type="datetime-local"
+                value={startDate}
+                onChange={(event) => setStartDate(event.target.value)}
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-wide text-gray-500">Data fine</label>
-              <Input type="datetime-local" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
+              <Input
+                type="datetime-local"
+                value={endDate}
+                onChange={(event) => setEndDate(event.target.value)}
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs uppercase tracking-wide text-gray-500">Operatore</label>
@@ -125,32 +148,34 @@ export function ProductionSchedulesPage() {
       <Card>
         <CardHeader>
           <CardTitle>Ordini in attesa di pianificazione</CardTitle>
-          <CardDescription>Filtra rapidamente gli ordini confermati da mettere in produzione.</CardDescription>
+          <CardDescription>
+            Filtra rapidamente gli ordini confermati da mettere in produzione.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
-            <Thead>
-              <Tr>
-                <Th>Ordine</Th>
-                <Th>Cliente</Th>
-                <Th>Consegna</Th>
-                <Th>Righe</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {orders
-                ?.filter((order) => order.status === 'confirmed')
-                .map((order) => (
-                  <Tr key={order.id}>
-                    <Td>{order.code}</Td>
-                    <Td>{order.client_id}</Td>
-                    <Td>{new Date(order.due_date).toLocaleDateString()}</Td>
-                    <Td>{order.lines?.length ?? 0}</Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
+              <Thead>
+                <Tr>
+                  <Th>Ordine</Th>
+                  <Th>Cliente</Th>
+                  <Th>Consegna</Th>
+                  <Th>Righe</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {orders
+                  ?.filter((order) => order.status === 'confirmed')
+                  .map((order) => (
+                    <Tr key={order.id}>
+                      <Td>{order.code}</Td>
+                      <Td>{order.client_id}</Td>
+                      <Td>{new Date(order.due_date).toLocaleDateString()}</Td>
+                      <Td>{order.lines?.length ?? 0}</Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
           </div>
         </CardContent>
       </Card>

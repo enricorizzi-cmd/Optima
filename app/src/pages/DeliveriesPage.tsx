@@ -26,7 +26,9 @@ export function DeliveriesPage() {
       <Card>
         <CardHeader>
           <CardTitle>Consegne</CardTitle>
-          <CardDescription>Controlla lo stato delle spedizioni e aggiorna le notifiche clienti.</CardDescription>
+          <CardDescription>
+            Controlla lo stato delle spedizioni e aggiorna le notifiche clienti.
+          </CardDescription>
         </CardHeader>
       </Card>
 
@@ -38,40 +40,43 @@ export function DeliveriesPage() {
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
-            <Thead>
-              <Tr>
-                <Th>Ordine</Th>
-                <Th>Schedulazione</Th>
-                <Th>Magazzino</Th>
-                <Th>Stato</Th>
-                <Th>Tracking</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {deliveriesQuery.data?.map((delivery) => (
-                <Tr key={delivery.id}>
-                  <Td>{delivery.order_id}</Td>
-                  <Td>{delivery.schedule_id}</Td>
-                  <Td>{delivery.warehouse_id}</Td>
-                  <Td>
-                    <Select
-                      value={delivery.status}
-                      onChange={(event) =>
-                        updateStatus.mutate({ id: delivery.id, status: event.target.value as any })
-                      }
-                    >
-                      {deliveryStatuses.map((status) => (
-                        <option key={status.value} value={status.value}>
-                          {status.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </Td>
-                  <Td>{delivery.tracking_number ?? '-'}</Td>
+              <Thead>
+                <Tr>
+                  <Th>Ordine</Th>
+                  <Th>Schedulazione</Th>
+                  <Th>Magazzino</Th>
+                  <Th>Stato</Th>
+                  <Th>Tracking</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {deliveriesQuery.data?.map((delivery) => (
+                  <Tr key={delivery.id}>
+                    <Td>{delivery.order_id}</Td>
+                    <Td>{delivery.schedule_id}</Td>
+                    <Td>{delivery.warehouse_id}</Td>
+                    <Td>
+                      <Select
+                        value={delivery.status}
+                        onChange={(event) =>
+                          updateStatus.mutate({
+                            id: delivery.id,
+                            status: event.target.value as any,
+                          })
+                        }
+                      >
+                        {deliveryStatuses.map((status) => (
+                          <option key={status.value} value={status.value}>
+                            {status.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </Td>
+                    <Td>{delivery.tracking_number ?? '-'}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </div>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
             <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>

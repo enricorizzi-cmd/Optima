@@ -12,7 +12,9 @@ export function InventoryPage() {
       <Card>
         <CardHeader>
           <CardTitle>Giacenze</CardTitle>
-          <CardDescription>Visualizza lo stato dei magazzini tra materie prime e prodotti finiti.</CardDescription>
+          <CardDescription>
+            Visualizza lo stato dei magazzini tra materie prime e prodotti finiti.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -26,7 +28,11 @@ export function InventoryPage() {
                     : 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-900 shadow-sm'
                 }`}
               >
-                {type === 'all' ? 'Tutto' : type === 'raw_material' ? 'Materie prime' : 'Prodotti finiti'}
+                {type === 'all'
+                  ? 'Tutto'
+                  : type === 'raw_material'
+                    ? 'Materie prime'
+                    : 'Prodotti finiti'}
               </button>
             ))}
           </div>
@@ -41,32 +47,36 @@ export function InventoryPage() {
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
-            <Thead>
-              <Tr>
-                <Th>Item</Th>
-                <Th>Tipologia</Th>
-                <Th>Magazzino</Th>
-                <Th>Quantità</Th>
-                <Th>UM</Th>
-                <Th>Aggiornato</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {inventory?.map((item) => (
-                <Tr key={item.id}>
-                  <Td>{item.item_id}</Td>
-                  <Td>{item.item_type === 'raw_material' ? 'Materia prima' : 'Prodotto finito'}</Td>
-                  <Td>{item.warehouse_id}</Td>
-                  <Td>{item.quantity.toLocaleString('it-IT')}</Td>
-                  <Td>{item.unit_of_measure}</Td>
-                  <Td>{new Date(item.updated_at).toLocaleString('it-IT')}</Td>
+              <Thead>
+                <Tr>
+                  <Th>Item</Th>
+                  <Th>Tipologia</Th>
+                  <Th>Magazzino</Th>
+                  <Th>Quantità</Th>
+                  <Th>UM</Th>
+                  <Th>Aggiornato</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {inventory?.map((item) => (
+                  <Tr key={item.id}>
+                    <Td>{item.item_id}</Td>
+                    <Td>
+                      {item.item_type === 'raw_material' ? 'Materia prima' : 'Prodotto finito'}
+                    </Td>
+                    <Td>{item.warehouse_id}</Td>
+                    <Td>{item.quantity.toLocaleString('it-IT')}</Td>
+                    <Td>{item.unit_of_measure}</Td>
+                    <Td>{new Date(item.updated_at).toLocaleString('it-IT')}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </div>
           {inventory && inventory.length === 0 && (
-            <p className="mt-4 text-sm text-gray-600">Nessuna giacenza caricata per il filtro selezionato.</p>
+            <p className="mt-4 text-sm text-gray-600">
+              Nessuna giacenza caricata per il filtro selezionato.
+            </p>
           )}
         </CardContent>
       </Card>
