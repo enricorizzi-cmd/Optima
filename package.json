@@ -21,8 +21,7 @@
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "migrate": "node scripts/migrate.js",
-    "update-backend-url": "node scripts/update-backend-url.js",
-    "start": "node start-server.js"
+    "update-backend-url": "node scripts/update-backend-url.js"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
