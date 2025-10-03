@@ -164,23 +164,30 @@ export const catalogKeys = {
 
 export function useClients() {
   const supabase = useSupabaseClient();
-  const getOrgId = useOrgId();
   
   return useQuery({
     queryKey: catalogKeys.clients(),
     queryFn: async () => {
-      const orgId = await getOrgId.refetch().then(res => res.data);
-      if (!orgId) throw new Error('Organization not found');
+      // Get user and org_id directly
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+      
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('org_id')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (!profile) throw new Error('User profile not found');
       
       const { data, error } = await supabase
         .from('clients')
         .select('*')
-        .eq('org_id', orgId);
-      
+        .eq('org_id', profile.org_id);
+        
       if (error) throw error;
       return data || [];
     },
-    enabled: !!getOrgId.data,
   });
 }
 
@@ -240,20 +247,28 @@ export function useInventory(type?: InventoryItem['item_type']) {
 export function useCreateClient(options?: UseMutationOptions<Client, Error, ClientPayload>) {
   const supabase = useSupabaseClient();
   const queryClient = useQueryClient();
-  const getOrgId = useOrgId();
   const { onSuccess, onError, onSettled, ...rest } = options ?? {};
 
   return useMutation<Client, Error, ClientPayload>({
     mutationFn: async (payload) => {
-      const orgId = await getOrgId.refetch().then(res => res.data);
-      if (!orgId) throw new Error('Organization not found');
+      // Get user and org_id directly
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
       
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('org_id')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (!profile) throw new Error('User profile not found');
+
       const { data, error } = await supabase
         .from('clients')
-        .insert([{ ...payload, org_id: orgId }])
+        .insert([{ ...payload, org_id: profile.org_id }])
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
