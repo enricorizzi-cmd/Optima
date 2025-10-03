@@ -23,7 +23,7 @@ export default fp(async (fastify) => {
   });
 
   await fastify.register(cors, {
-    origin: env.CORS_ORIGIN.split(','),
+    origin: env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',') : true,
     credentials: true,
   });
 
