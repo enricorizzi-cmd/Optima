@@ -13,12 +13,12 @@ console.log('🧪 Starting deployment verification...');
 const services = [
   {
     name: 'Frontend',
-    url: 'https://optima-production-frontend.onrender.com',
+    url: 'https://optima-2l2r.onrender.com',
     expected: 'HTML content'
   },
   {
     name: 'Backend',
-    url: 'https://optima-backend-h0z2.onrender.com',
+    url: 'https://optima-2l2r.onrender.com',
     expected: 'API responses',
     endpoints: ['/health', '/healthz']
   },
