@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApi } from '../../hooks/useApi';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 export const catalogKeys = {
     all: ['catalog'],
     clients: () => [...catalogKeys.all, 'clients'],
@@ -11,11 +12,31 @@ export const catalogKeys = {
     inventory: (type) => [...catalogKeys.all, 'inventory', type ?? 'all'],
 };
 export function useClients() {
-    const { request } = useApi();
+    const supabase = useSupabaseClient();
+    
     return useQuery({
         queryKey: catalogKeys.clients(),
-        queryFn: () => request('/api/catalog/clients'),
-        select: (response) => response.data || [],
+        queryFn: async () => {
+            // Get user and org_id directly
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('User not authenticated');
+            
+            const { data: profile } = await supabase
+                .from('user_profiles')
+                .select('org_id')
+                .eq('user_id', user.id)
+                .single();
+                
+            if (!profile) throw new Error('User profile not found');
+            
+            const { data, error } = await supabase
+                .from('clients')
+                .select('*')
+                .eq('org_id', profile.org_id);
+                
+            if (error) throw error;
+            return data || [];
+        },
     });
 }
 export function useSuppliers() {
@@ -66,14 +87,33 @@ export function useInventory(type) {
     });
 }
 export function useCreateClient(options) {
-    const { request } = useApi();
+    const supabase = useSupabaseClient();
     const queryClient = useQueryClient();
     const { onSuccess, onError, onSettled, ...rest } = options ?? {};
+
     return useMutation({
-        mutationFn: (payload) => request('/api/catalog/clients', {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        }),
+        mutationFn: async (payload) => {
+            // Get user and org_id directly
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('User not authenticated');
+            
+            const { data: profile } = await supabase
+                .from('user_profiles')
+                .select('org_id')
+                .eq('user_id', user.id)
+                .single();
+                
+            if (!profile) throw new Error('User profile not found');
+
+            const { data, error } = await supabase
+                .from('clients')
+                .insert([{ ...payload, org_id: profile.org_id }])
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
             onSuccess?.(data, variables, context);
