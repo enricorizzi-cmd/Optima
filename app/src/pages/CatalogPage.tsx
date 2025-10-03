@@ -158,8 +158,8 @@ export function CatalogPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.key
-                    ? 'border-blue-600 bg-blue-600 text-white shadow-lg transform scale-105'
-                    : 'border-gray-800 bg-gray-100 text-gray-900 hover:bg-blue-100 hover:border-blue-500 hover:text-blue-900 shadow-md'
+                    ? 'border-primary bg-primary text-white shadow-lg transform scale-105 ring-2 ring-primary/20'
+                    : 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-primary/10 hover:border-primary hover:text-primary shadow-sm hover:shadow-md'
                 }`}
               >
                 {tab.label}
