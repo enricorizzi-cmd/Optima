@@ -1,6 +1,7 @@
 import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useApi } from '../../hooks/useApi';
 
 export interface BaseEntity {
   id: string;
@@ -291,30 +292,40 @@ export function useInventory(type?: InventoryItem['item_type']) {
 export function useCreateClient(options?: UseMutationOptions<Client, Error, ClientPayload>) {
   const supabase = useSupabaseClient();
   const queryClient = useQueryClient();
+  const { request } = useApi();
   const { onSuccess, onError, onSettled, ...rest } = options ?? {};
 
   return useMutation<Client, Error, ClientPayload>({
     mutationFn: async (payload) => {
-      // Get user and org_id directly
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-      
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('user_id', user.id)
-        .single();
+      try {
+        // Try Supabase first
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
         
-      if (!profile) throw new Error('User profile not found');
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('org_id')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (!profile) throw new Error('User profile not found');
 
-      const { data, error } = await supabase
-        .from('clients')
-        .insert([{ ...payload, org_id: profile.org_id }])
-        .select()
-        .single();
+        const { data, error } = await supabase
+          .from('clients')
+          .insert([{ ...payload, org_id: profile.org_id }])
+          .select()
+          .single();
 
-      if (error) throw error;
-      return data;
+        if (error) throw error;
+        return data;
+      } catch (supabaseError) {
+        console.log('Supabase failed, falling back to API:', supabaseError);
+        // Fallback to backend API
+        return await request('/api/catalog/clients', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+      }
     },
     onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
