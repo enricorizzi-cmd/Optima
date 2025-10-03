@@ -21,8 +21,9 @@ export default defineConfig({
         },
     },
     preview: {
-        port: 4173,
+        port: 3000,
         strictPort: true,
+        allowedHosts: ['optima-2l2r.onrender.com'],
     },
     resolve: {
         alias: {
