@@ -17,7 +17,7 @@ export const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHead
 );
 
 export const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn('text-sm text-gray-600', className)} {...props} />
+  <p className={cn('text-sm text-gray-600 text-center', className)} {...props} />
 );
 
 export const CardContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (

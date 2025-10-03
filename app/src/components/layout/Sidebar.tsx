@@ -44,7 +44,7 @@ export function Sidebar({ variant = 'desktop', onNavigate }: SidebarProps) {
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
-                'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-colors',
+                'group flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-medium transition-colors min-h-[48px]',
                 isActive
                   ? 'bg-primary/20 text-primary shadow-neon'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
