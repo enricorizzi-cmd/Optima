@@ -1,6 +1,8 @@
 ﻿import 'dotenv/config';
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
 import authPlugin from './middleware/auth';
 import securityPlugin from './middleware/security';
 import { registerAuthRoutes } from './routes/auth';
@@ -20,6 +22,13 @@ export async function buildServer() {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
+  // Register static file serving for frontend
+  await app.register(fastifyStatic, {
+    root: path.join(__dirname, '../../app/dist'),
+    prefix: '/',
+  });
+
+  // Register plugins and routes
   await app.register(securityPlugin);
   await app.register(registerHealthRoutes);
   await app.register(registerAuthRoutes);
@@ -28,6 +37,14 @@ export async function buildServer() {
   await app.register(registerProductionRoutes);
   await app.register(registerPushRoutes);
   await app.register(registerFeatureRoutes);
+
+  // Catch-all route for SPA - serve index.html for client-side routing
+  app.setNotFoundHandler((request, reply) => {
+    if (!request.url.startsWith('/api')) {
+      return reply.sendFile('index.html');
+    }
+    reply.code(404).send({ message: 'Route not found', statusCode: 404 });
+  });
 
   return app;
 }
