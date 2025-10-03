@@ -111,3 +111,4 @@ VAPID_PRIVATE=[configurato]
 **Ultimo aggiornamento**: Conclusione deploy - l'app è completamente operativa al 100%.
 
 **Test consigliato**: Accedere all'URL app, registrare utente di test, creare nuovo ordine e verificare funzionalità core.
+
