@@ -62,10 +62,10 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardDescription>Notifiche produzione</CardDescription>
-            <CardTitle className="text-3xl font-display text-primary">Push</CardTitle>
+            <CardTitle className="text-3xl font-display text-primary text-center">Push</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-white/70">
-            <p>Ricevi aggiornamenti in tempo reale su avanzamento e consegne.</p>
+          <CardContent className="text-sm text-gray-600">
+            <p>Ricevi aggiornamenti in tempo reale su advancements e consegne.</p>
             <div className="mt-4 flex flex-col gap-2">
               <Button
                 variant="secondary"
@@ -82,7 +82,7 @@ export function DashboardPage() {
               )}
               {push.error && <span className="text-xs text-danger">{push.error}</span>}
             </div>
-            <p className="mt-3 text-xs text-white/40">
+            <p className="mt-3 text-xs text-gray-500">
               Su iOS/iPadOS aggiungi l'app alla schermata Home (&gt;=16.4) per abilitare le push.
             </p>
           </CardContent>
@@ -91,9 +91,9 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardDescription>Ordini attivi</CardDescription>
-            <CardTitle className="text-3xl font-display text-primary">{summary.totalOrders}</CardTitle>
+            <CardTitle className="text-3xl font-display text-primary text-center">{summary.totalOrders}</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-white/70">
+          <CardContent className="text-sm text-gray-600">
             <p>Monitora tutte le commesse clienti e il loro stato di avanzamento.</p>
             <Button asChild variant="secondary" size="sm" className="mt-4 w-full">
               <Link to="/app/orders">Vai agli ordini</Link>
@@ -104,9 +104,9 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardDescription>Catalogo materie prime</CardDescription>
-            <CardTitle className="text-3xl font-display text-primary">{summary.rawMaterials}</CardTitle>
+            <CardTitle className="text-3xl font-display text-primary text-center">{summary.rawMaterials}</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-white/70">
+          <CardContent className="text-sm text-gray-600">
             <p>Ultimo aggiornamento scorte: {new Date().toLocaleDateString()}</p>
           </CardContent>
         </Card>
@@ -114,11 +114,11 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardDescription>Disponibilità magazzino</CardDescription>
-            <CardTitle className="text-3xl font-display text-primary">
+            <CardTitle className="text-3xl font-display text-primary text-center">
               {Math.round(summary.inventoryTotals.finished + summary.inventoryTotals.raw)}
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-white/70">
+          <CardContent className="text-sm text-gray-600">
             <div className="flex flex-col gap-1">
               <span>• Prodotti finiti: {Math.round(summary.inventoryTotals.finished)}</span>
               <span>• Materie prime: {Math.round(summary.inventoryTotals.raw)}</span>
@@ -167,13 +167,13 @@ export function DashboardPage() {
                       {orderStatusLabels[order.status] ?? order.status}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1 text-xs text-gray-600">
                     Consegna prevista {new Date(order.due_date).toLocaleDateString()}
                   </p>
                 </div>
               ))}
               {orders && orders.length === 0 && (
-                <p className="text-sm text-white/50">Ancora nessun ordine registrato oggi.</p>
+                <p className="text-sm text-gray-500">Ancora nessun ordine registrato oggi.</p>
               )}
             </div>
           </CardContent>
