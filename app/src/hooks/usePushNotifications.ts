@@ -40,11 +40,23 @@ export function usePushNotifications() {
 
       const registration = await navigator.serviceWorker.ready;
       
-      // Annulla le sottoscrizioni esistenti prima di crearne una nuova
+      // Debug: verifica che il push manager sia disponibile
+      if (!registration.pushManager) {
+        throw new Error('Push Manager not available in service worker');
+      }
+      
+      // Annulla le sottoscrizioni esistenti prima di crearne una nuova (se supportato)
       // Questo risolve il problema delle chiavi VAPID obsolete nella cache del browser
-      const existingSubscriptions = await registration.pushManager.getSubscriptions();
-      for (const oldSubscription of existingSubscriptions) {
-        await oldSubscription.unsubscribe();
+      if ('getSubscriptions' in registration.pushManager) {
+        try {
+          const existingSubscriptions = await registration.pushManager.getSubscriptions();
+          for (const oldSubscription of existingSubscriptions) {
+            await oldSubscription.unsubscribe();
+          }
+        } catch (error) {
+          // Se getSubscriptions fallisce, continuiamo comunque
+          console.warn('Could not clear existing subscriptions:', error);
+        }
       }
 
       const subscription = await registration.pushManager.subscribe({
