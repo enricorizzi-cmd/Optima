@@ -2,7 +2,9 @@
 import { cn } from '../../lib/utils';
 
 export const Table = ({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) => (
-  <table className={cn('w-full border-collapse text-sm text-gray-900', className)} {...props} />
+  <div className="overflow-x-auto">
+    <table className={cn('w-full border-collapse text-sm text-gray-900', className)} {...props} />
+  </div>
 );
 
 export const Thead = ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (

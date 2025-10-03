@@ -8,11 +8,11 @@ type ToastProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>;
 type ToastActionElement = React.ReactElement<typeof ToastPrimitives.Action>;
 
 const toastVariants = cva(
-  'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-2xl border border-white/10 bg-[#12182b] p-4 shadow-xl shadow-primary/10 backdrop-blur transition-all',
+  'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-xl shadow-gray-200/50 backdrop-blur transition-all',
   {
     variants: {
       variant: {
-        default: 'text-white',
+        default: 'text-gray-900',
         success: 'border-success/40 bg-success/20 text-success',
         destructive: 'border-danger/40 bg-danger/10 text-danger',
       },
@@ -61,7 +61,7 @@ ToastTitle.displayName = ToastPrimitives.Title.displayName;
 
 const ToastDescription = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Description>, React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>>(
   ({ className, ...props }, ref) => (
-    <ToastPrimitives.Description ref={ref} className={cn('text-sm text-white/70', className)} {...props} />
+    <ToastPrimitives.Description ref={ref} className={cn('text-sm text-gray-600', className)} {...props} />
   )
 );
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
@@ -71,7 +71,7 @@ const ToastAction = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Act
     <ToastPrimitives.Action
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center rounded-xl border border-white/20 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary/60',
+        'inline-flex items-center justify-center rounded-xl border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/60',
         className
       )}
       {...props}
@@ -84,7 +84,7 @@ const ToastClose = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Clos
   ({ className, ...props }, ref) => (
     <ToastPrimitives.Close
       ref={ref}
-      className={cn('absolute right-3 top-3 rounded-full p-1 text-white/40 transition hover:text-white', className)}
+      className={cn('absolute right-3 top-3 rounded-full p-1 text-gray-400 transition hover:text-gray-600', className)}
       toast-close=""
       {...props}
     >

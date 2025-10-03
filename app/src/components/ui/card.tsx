@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 export const Card = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('rounded-2xl border border-gray-200 bg-white p-6 shadow-xl shadow-gray-200/50', className)}
+    className={cn('rounded-2xl border border-gray-200 bg-white p-4 shadow-xl shadow-gray-200/50 sm:p-6', className)}
     {...props}
   />
 );

@@ -58,5 +58,5 @@ function getDefaultValues(defaultValues) {
     };
 }
 function Field({ label, error, children }) {
-    return (_jsxs("label", { className: "flex flex-col gap-1 text-sm text-white/70", children: [_jsx("span", { className: "text-xs uppercase tracking-wide text-white/40", children: label }), children, error && _jsx("span", { className: "text-xs text-danger", children: error })] }));
+    return (_jsxs("label", { className: "flex flex-col gap-1 text-sm text-gray-700", children: [_jsx("span", { className: "text-xs uppercase tracking-wide text-gray-500", children: label }), children, error && _jsx("span", { className: "text-xs text-danger", children: error })] }));
 }

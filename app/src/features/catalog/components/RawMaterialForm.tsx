@@ -59,7 +59,7 @@ export function RawMaterialForm({ defaultValues, suppliers, loading, onSubmit }:
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <Field label="Nome" error={form.formState.errors.name?.message}>
           <Input placeholder="Granulato ABS" {...form.register('name')} disabled={loading} />
         </Field>
@@ -126,8 +126,8 @@ interface FieldProps {
 
 function Field({ label, error, children }: FieldProps) {
   return (
-    <label className="flex flex-col gap-1 text-sm text-white/70">
-      <span className="text-xs uppercase tracking-wide text-white/40">{label}</span>
+    <label className="flex flex-col gap-1 text-sm text-gray-700">
+      <span className="text-xs uppercase tracking-wide text-gray-500">{label}</span>
       {children}
       {error && <span className="text-xs text-danger">{error}</span>}
     </label>
