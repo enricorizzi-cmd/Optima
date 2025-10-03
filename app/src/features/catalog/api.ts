@@ -1,6 +1,28 @@
 ﻿import type { UseMutationOptions } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useApi } from '../../hooks/useApi';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+
+// Helper function to get organization ID
+function useOrgId() {
+  const supabase = useSupabaseClient();
+  
+  return useQuery({
+    queryKey: ['orgId'],
+    async queryFn() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+      
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('org_id')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (!profile) throw new Error('User profile not found');
+      return profile.org_id;
+    },
+  });
+}
 
 export interface BaseEntity {
   id: string;
@@ -141,11 +163,24 @@ export const catalogKeys = {
 };
 
 export function useClients() {
-  const { request } = useApi();
+  const supabase = useSupabaseClient();
+  const getOrgId = useOrgId();
+  
   return useQuery({
     queryKey: catalogKeys.clients(),
-    queryFn: () => request<PaginatedResponse<Client>>('/api/catalog/clients'),
-    select: (response) => response.data || [],
+    queryFn: async () => {
+      const orgId = await getOrgId.refetch().then(res => res.data);
+      if (!orgId) throw new Error('Organization not found');
+      
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('org_id', orgId);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!getOrgId.data,
   });
 }
 
@@ -203,16 +238,25 @@ export function useInventory(type?: InventoryItem['item_type']) {
 }
 
 export function useCreateClient(options?: UseMutationOptions<Client, Error, ClientPayload>) {
-  const { request } = useApi();
+  const supabase = useSupabaseClient();
   const queryClient = useQueryClient();
+  const getOrgId = useOrgId();
   const { onSuccess, onError, onSettled, ...rest } = options ?? {};
 
   return useMutation<Client, Error, ClientPayload>({
-    mutationFn: (payload) =>
-      request<Client>('/api/catalog/clients', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      }),
+    mutationFn: async (payload) => {
+      const orgId = await getOrgId.refetch().then(res => res.data);
+      if (!orgId) throw new Error('Organization not found');
+      
+      const { data, error } = await supabase
+        .from('clients')
+        .insert([{ ...payload, org_id: orgId }])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
     onSuccess: (data, variables, context, meta) => {
       queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
       onSuccess?.(data, variables, context, meta);

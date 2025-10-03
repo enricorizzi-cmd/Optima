@@ -188,7 +188,7 @@ export function CatalogPage() {
               <DialogTrigger asChild>
                 <Button onClick={() => setEditingClientId(null)}>Nuovo cliente</Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>{editingClient ? 'Modifica cliente' : 'Nuovo cliente'}</DialogTitle>
                 </DialogHeader>

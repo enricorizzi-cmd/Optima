@@ -58,19 +58,19 @@ export function ClientForm({ defaultValues, loading, onSubmit }: ClientFormProps
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-        <Field label="Ragione sociale" error={form.formState.errors.name?.message}>
+        <Field label="Ragione sociale" required error={form.formState.errors.name?.message}>
           <Input placeholder="Es. Azienda Gamma" {...form.register('name')} disabled={loading} />
         </Field>
-        <Field label="Codice" error={form.formState.errors.code?.message}>
+        <Field label="Codice" required error={form.formState.errors.code?.message}>
           <Input placeholder="Es. CLI-001" {...form.register('code')} disabled={loading} />
         </Field>
         <Field label="Agente di riferimento">
           <Input placeholder="Es. Agente Nord" {...form.register('agent')} disabled={loading} />
         </Field>
-        <Field label="Tipologia" error={form.formState.errors.type?.message}>
+        <Field label="Tipologia" required error={form.formState.errors.type?.message}>
           <Input placeholder="Industry/Retail" {...form.register('type')} disabled={loading} />
         </Field>
-        <Field label="Categoria" error={form.formState.errors.category?.message}>
+        <Field label="Categoria" required error={form.formState.errors.category?.message}>
           <Input placeholder="Premium/Standard" {...form.register('category')} disabled={loading} />
         </Field>
         <Field label="Email" error={form.formState.errors.email?.message}>
@@ -123,16 +123,20 @@ function getDefaultValues(defaultValues?: Partial<ClientPayload>): ClientFormVal
 
 interface FieldProps {
   label: string;
+  required?: boolean;
   error?: string;
   children: React.ReactNode;
 }
 
-function Field({ label, error, children }: FieldProps) {
+function Field({ label, required = false, error, children }: FieldProps) {
   return (
     <label className="flex flex-col gap-1 text-sm text-gray-700">
-      <span className="text-xs uppercase tracking-wide text-gray-500">{label}</span>
+      <span className="text-xs uppercase tracking-wide text-gray-500">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </span>
       {children}
-      {error && <span className="text-xs text-danger">{error}</span>}
+      {error && <span className="text-xs text-red-500 font-medium">{error}</span>}
     </label>
   );
 }
