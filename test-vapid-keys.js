@@ -1,5 +1,5 @@
 // Test script per verificare la configurazione VAPID
-const webpush = require('web-push');
+import webpush from 'web-push';
 
 console.log('🔍 Test configurazione VAPID...\n');
 
@@ -16,12 +16,8 @@ try {
   function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const rawData = Buffer.from(base64, 'base64');
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; i++) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
+    const buffer = Buffer.from(base64, 'base64');
+    return new Uint8Array(buffer);
   }
   
   const convertedKey = urlBase64ToUint8Array(publicKey);

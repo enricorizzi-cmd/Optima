@@ -5,12 +5,11 @@ import { useApi } from './useApi';
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; i += 1) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
+  
+  // Usa un approccio più sicuro per la decodifica base64
+  const binaryString = atob(base64);
+  const bytes = binaryString.split('').map(char => char.charCodeAt(0));
+  return new Uint8Array(bytes);
 }
 
 export function usePushNotifications() {
