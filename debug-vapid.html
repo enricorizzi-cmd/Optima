@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VAPID Debug Tool</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 VAPID Debug Tool</h1>
+    <p>Questo tool aiuta a diagnosticare i problemi con le chiavi VAPID</p>
+
+    <button onclick="testVAPIDKey()">Test Chiave VAPID</button>
+    <button onclick="testServiceWorker()">Test Service Worker</button>
+    <button onclick="testPushSubscription()">Test Push Subscription</button>
+    <button onclick="clearAll()">Cancella Sottoscrizioni Esistenti</button>
+
+    <div id="output"></div>
+
+    <script>
+        // La stessa chiave del frontend
+        const VAPID_PUBLIC_KEY = 'BCT_O3sEqSD8H6xz6dZ277hGyoBCtKZBjygunKBlONmDCCexfIKY334L-6VzHRflP3DTudJg4PwkdLTbg3uRI50';
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            output.appendChild(div);
+            console.log(message);
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            
+            const binaryString = atob(base64);
+            const bytes = binaryString.split('').map(char => char.charCodeAt(0));
+            return new Uint8Array(bytes);
+        }
+
+        async function testVAPIDKey() {
+            log('🔑 Testing VAPID Key conversion...');
+            
+            try {
+                const convertedKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+                log(`✅ Key conversion successful! Length: ${convertedKey.length} bytes`, 'success');
+                log(`📊 Key preview: ${Array.from(convertedKey.slice(0, 10)).join(', ')}... (first 10 bytes)`);
+                
+                // Test formato base64 URL-safe
+                const base64valid = /^[A-Za-z0-9_-]+$/.test(VAPID_PUBLIC_KEY);
+                log(`📋 Base64 URL-safe format: ${base64valid ? '✅ Valid' : '❌ Invalid'}`, base64valid ? 'success' : 'error');
+                
+                log(`📏 Key length: ${VAPID_PUBLIC_KEY.length} characters`);
+                log(`🔧 Expected length for VAPID public key: ~87 characters (ours: ${VAPID_PUBLIC_KEY.length})`);
+                
+            } catch (error) {
+                log(`❌ VAPID Key conversion failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testServiceWorker() {
+            log('🔧 Testing Service Worker...');
+            
+            if (!('serviceWorker' in navigator)) {
+                log('❌ Service Worker not supported in this browser', 'error');
+                return;
+            }
+
+            if (!('PushManager' in window)) {
+                log('❌ Push Manager not supported in this browser', 'error');
+                return;
+            }
+
+            log('✅ Service Worker and Push Manager supported', 'success');
+
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                log(`✅ Service Worker ready, scope: ${registration.scope}`, 'success');
+                
+                const existingSubscriptions = await registration.pushManager.getSubscriptions();
+                log(`📊 Existing subscriptions: ${existingSubscriptions.length}`);
+                
+                if (existingSubscriptions.length > 0) {
+                    log('⚠️ Found existing subscriptions - these might be causing conflicts', 'error');
+                    existingSubscriptions.forEach((sub, index) => {
+                        log(`🔍 Subscription ${index + 1}: ${sub.endpoint.substring(0, 50)}...`);
+                    });
+                }
+                
+            } catch (error) {
+                log(`❌ Service Worker error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testPushSubscription() {
+            log('🚀 Testing Push Subscription...');
+            
+            try {
+                const permission = await Notification.requestPermission();
+                log(`📋 Permission status: ${permission}`, permission === 'granted' ? 'success' : 'error');
+                
+                if (permission !== 'granted') {
+                    log('❌ Permission not granted - cannot test subscription', 'error');
+                    return;
+                }
+
+                const registration = await navigator.serviceWorker.ready;
+                
+                // Cancella sottoscrizioni esistenti prima del test
+                const existingSubscriptions = await registration.pushManager.getSubscriptions();
+                for (const subscription of existingSubscriptions) {
+                    await subscription.unsubscribe();
+                    log(`🗑️ Cancelled existing subscription: ${subscription.endpoint.substring(0, 50)}...`);
+                }
+
+                log('🔄 Attempting to create new subscription...');
+                
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+                });
+
+                log(`✅ Subscription successful!`, 'success');
+                log(`🔗 Endpoint: ${subscription.endpoint.substring(0, 100)}...`);
+                
+                const p256dh = subscription.getKey('p256dh');
+                const auth = subscription.getKey('auth');
+                
+                log(`🔐 p256dh key present: ${p256dh ? 'Yes' : 'No'}`);
+                log(`🔐 Auth key present: ${auth ? 'Yes' : 'No'}`);
+                
+            } catch (error) {
+                log(`❌ Push subscription failed: ${error.message}`, 'error');
+                
+                if (error.message.includes('applicationServerKey')) {
+                    log('🔍 This error suggests the VAPID public key is invalid', 'error');
+                    log('💡 Possible causes:', 'error');
+                    log('   - Key length is wrong', 'error');
+                    log('   - Key format is invalid', 'error'); 
+                    log('   - Key doesn\'t match the backend VAPID key pair', 'error');
+                }
+            }
+        }
+
+        async function clearAll() {
+            log('🧹 Clearing all push subscriptions...');
+            
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const subscriptions = await registration.pushManager.getSubscriptions();
+                
+                let clearedCount = 0;
+                for (const subscription of subscriptions) {
+                    const success = await subscription.unsubscribe();
+                    if (success) {
+                        clearedCount++;
+                        log(`✅ Cleared subscription: ${subscription.endpoint.substring(0, 50)}...`);
+                    } else {
+                        log(`❌ Failed to clear subscription: ${subscription.endpoint.substring(0, 50)}...`, 'error');
+                    }
+                }
+                
+                log(`🧹 Cleared ${clearedCount} subscriptions`, 'success');
+                
+            } catch (error) {
+                log(`❌ Error clearing subscriptions: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
