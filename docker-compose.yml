@@ -9,10 +9,10 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
-      - SUPABASE_URL=https://tvpymdbfqmtvlbvxqxwg.supabase.co
+      - SUPABASE_URL=https://skmljuuxwnikfthgjrkg.supabase.co
       - SUPABASE_SERVICE_ROLE=${SUPABASE_SERVICE_ROLE}
       - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
-      - CORS_ORIGIN=https://optima-production-frontend.onrender.com
+      - CORS_ORIGIN=https://optima-2l2r.onrender.com
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
       interval: 30s
