@@ -89,30 +89,40 @@ export function useInventory(type) {
 export function useCreateClient(options) {
     const supabase = useSupabaseClient();
     const queryClient = useQueryClient();
+    const { request } = useApi();
     const { onSuccess, onError, onSettled, ...rest } = options ?? {};
 
     return useMutation({
         mutationFn: async (payload) => {
-            // Get user and org_id directly
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) throw new Error('User not authenticated');
-            
-            const { data: profile } = await supabase
-                .from('user_profiles')
-                .select('org_id')
-                .eq('user_id', user.id)
-                .single();
+            try {
+                // Try Supabase first
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) throw new Error('User not authenticated');
                 
-            if (!profile) throw new Error('User profile not found');
+                const { data: profile } = await supabase
+                    .from('user_profiles')
+                    .select('org_id')
+                    .eq('user_id', user.id)
+                    .single();
+                    
+                if (!profile) throw new Error('User profile not found');
 
-            const { data, error } = await supabase
-                .from('clients')
-                .insert([{ ...payload, org_id: profile.org_id }])
-                .select()
-                .single();
+                const { data, error } = await supabase
+                    .from('clients')
+                    .insert([{ ...payload, org_id: profile.org_id }])
+                    .select()
+                    .single();
 
-            if (error) throw error;
-            return data;
+                if (error) throw error;
+                return data;
+            } catch (supabaseError) {
+                console.log('Supabase failed, falling back to API:', supabaseError);
+                // Fallback to backend API
+                return await request('/api/catalog/clients', {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+            }
         },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: catalogKeys.clients() });
