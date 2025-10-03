@@ -19,12 +19,12 @@ app/src/lib/env.ts  ← Questo per development locale
 ```javascript
 // ✅ CORRETTO per produzione
 export const env = {
-  backendUrl: 'https://optima-212r.onrender.com', // SENZA /api alla fine!
+  backendUrl: 'https://optima-2l2r.onrender.com', // SENZA /api alla fine!
 }
 
 // ❌ SBAGLIATO
 export const env = {
-  backendUrl: 'https://optima-212r.onrender.com/api', // DUPLICA /api!
+  backendUrl: 'https://optima-2l2r.onrender.com/api', // DUPLICA /api!
 }
 ```
 
@@ -71,7 +71,7 @@ export const env = {
 
 3. ✅ **Test endpoint dopo deploy:**
    ```bash
-   curl -I https://optima-212r.onrender.com/api/health
+   curl -I https://optima-2l2r.onrender.com/api/health
    ```
 
 ### **Durante il deploy:**
@@ -151,10 +151,10 @@ app/src/features/catalog/api.ts    # Endpoint API paths
 
 ```bash
 # 1. Test health endpoint
-curl https://optima-212r.onrender.com/api/health
+curl https://optima-2l2r.onrender.com/api/health
 
 # 2. Test catalog endpoints (dovrebbero dare 401 senza auth, non 404)
-curl https://optima-212r.onrender.com/api/catalog/clients
+curl https://optima-2l2r.onrender.com/api/catalog/clients
 
 # 3. Nel browser: F12 → Console per errori JavaScript
 # 4. Nel browser: F12 → Network per errori HTTP

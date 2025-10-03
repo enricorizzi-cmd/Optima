@@ -25,7 +25,7 @@
 ### **2. ERRORE 404 → Era duplicazione URL**
 
 **Problema originale:**
-- ❌ POST `https://optima-212r.onrender.com/api/api/catalog/clients` 404
+- ❌ POST `https://optima-2l2r.onrender.com/api/api/catalog/clients` 404
 - ❌ URL duplicata `/api/api/`
 
 **Causa reale:**
@@ -34,7 +34,7 @@
 - ❌ Risultato: `/api/api/catalog/clients`
 
 **Soluzione applicata:**
-✅ File `app/src/lib/env.js` → `backendUrl: 'https://optima-212r.onrender.com'`  
+✅ File `app/src/lib/env.js` → `backendUrl: 'https://optima-2l2r.onrender.com'`  
 ✅ Rimossi fix `/api` duplicato
 
 ---

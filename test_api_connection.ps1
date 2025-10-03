@@ -6,7 +6,7 @@ Write-Host "=== Testing API Connection ===" -ForegroundColor Green
 # Configurazione Supabase
 $supabaseUrl = "https://skmljuuxwnikfthgjrkg.supabase.co"
 $supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrbWxqdXV4d25pa2Z0aGdqcmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzMjU1NzgsImV4cCI6MjA3NDkwMTU3OH0.DNhbvmtWCj3C8hnjhVxfh0E-zunfu2X4oLlI5kRlnrs"
-$backendUrl = "https://optima-212r.onrender.com"
+$backendUrl = "https://optima-2l2r.onrender.com"
 
 try {
     Write-Host "1. Testing Supabase connectivity..." -ForegroundColor Yellow
