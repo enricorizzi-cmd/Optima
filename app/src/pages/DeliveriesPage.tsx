@@ -36,7 +36,8 @@ export function DeliveriesPage() {
           <CardDescription>Gestisci il passaggio da stock a consegna finale.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <Thead>
               <Tr>
                 <Th>Ordine</Th>
@@ -71,6 +72,7 @@ export function DeliveriesPage() {
               ))}
             </Tbody>
           </Table>
+          </div>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
             <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>
           )}

@@ -39,7 +39,8 @@ export function InventoryPage() {
           <CardDescription>Dati aggiornati per magazzino e tipologia articolo.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <Thead>
               <Tr>
                 <Th>Item</Th>
@@ -63,6 +64,7 @@ export function InventoryPage() {
               ))}
             </Tbody>
           </Table>
+          </div>
           {inventory && inventory.length === 0 && (
             <p className="mt-4 text-sm text-gray-600">Nessuna giacenza caricata per il filtro selezionato.</p>
           )}

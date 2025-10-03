@@ -26,7 +26,7 @@ const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.C
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed left-1/2 top-1/2 z-[100] w-[94vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-white/10 bg-[#0e1425] p-6 shadow-2xl shadow-primary/25 focus:outline-none',
+          'fixed inset-x-4 top-[10vh] z-[100] max-h-[85vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#0e1425] p-6 shadow-2xl shadow-primary/25 focus:outline-none sm:inset-x-8 md:inset-auto md:left-1/2 md:top-1/2 md:w-[94vw] md:max-w-2xl md:-translate-x-1/2 md:-translate-y-1/2',
           className
         )}
         {...props}
@@ -57,3 +57,4 @@ const DialogDescription = React.forwardRef<React.ElementRef<typeof DialogPrimiti
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger };
+

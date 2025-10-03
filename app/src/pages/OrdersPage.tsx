@@ -311,7 +311,8 @@ export function OrdersPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -337,6 +338,7 @@ export function OrdersPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
           </CardContent>
         </Card>
       ))}
@@ -347,7 +349,8 @@ export function OrdersPage() {
           <CardDescription>Gestisci il passaggio da stock a consegna finale.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <Thead>
               <Tr>
                 <Th>Ordine</Th>
@@ -381,6 +384,7 @@ export function OrdersPage() {
               ))}
             </Tbody>
           </Table>
+          </div>
           {deliveriesQuery.data && deliveriesQuery.data.length === 0 && (
             <p className="mt-4 text-sm text-gray-600">Nessuna consegna ancora programmata.</p>
           )}

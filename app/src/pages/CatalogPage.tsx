@@ -173,7 +173,8 @@ export function CatalogPage() {
             </Dialog>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -217,6 +218,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {clients && clients.length === 0 && <p className="mt-4 text-sm text-white/50">Nessun cliente registrato.</p>}
           </CardContent>
         </Card>
@@ -229,7 +231,8 @@ export function CatalogPage() {
             <CardDescription>Ultimi accordi e condizioni di pagamento.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -256,6 +259,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {suppliers && suppliers.length === 0 && <p className="mt-4 text-sm text-white/50">Nessun fornitore registrato.</p>}
           </CardContent>
         </Card>
@@ -310,7 +314,8 @@ export function CatalogPage() {
             </Dialog>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -347,6 +352,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {rawMaterials && rawMaterials.length === 0 && (
               <p className="mt-4 text-sm text-white/50">Carica le tue materie prime per iniziare la programmazione.</p>
             )}
@@ -361,7 +367,8 @@ export function CatalogPage() {
             <CardDescription>Classificazione per linea produttiva e unita di misura.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -385,6 +392,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {finishedProducts && finishedProducts.length === 0 && <p className="mt-4 text-sm text-white/50">Nessun prodotto finito registrato.</p>}
           </CardContent>
         </Card>
@@ -397,7 +405,8 @@ export function CatalogPage() {
             <CardDescription>Sedi e linee di riferimento.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Codice</Th>
@@ -417,6 +426,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {warehouses && warehouses.length === 0 && <p className="mt-4 text-sm text-white/50">Definisci almeno un magazzino di riferimento.</p>}
           </CardContent>
         </Card>
@@ -429,7 +439,8 @@ export function CatalogPage() {
             <CardDescription>Responsabili di linea e contatti rapidi.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <Thead>
                 <Tr>
                   <Th>Nome</Th>
@@ -451,6 +462,7 @@ export function CatalogPage() {
                 ))}
               </Tbody>
             </Table>
+            </div>
             {operators && operators.length === 0 && (
               <p className="mt-4 text-sm text-white/50">Assegna gli operatori alle linee per monitorare l'avanzamento.</p>
             )}

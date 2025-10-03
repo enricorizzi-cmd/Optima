@@ -128,7 +128,8 @@ export function ProductionSchedulesPage() {
           <CardDescription>Filtra rapidamente gli ordini confermati da mettere in produzione.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <Thead>
               <Tr>
                 <Th>Ordine</Th>
@@ -150,6 +151,7 @@ export function ProductionSchedulesPage() {
                 ))}
             </Tbody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
