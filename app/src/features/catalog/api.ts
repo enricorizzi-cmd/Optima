@@ -13,7 +13,7 @@ function useOrgId() {
       if (!user) throw new Error('User not authenticated');
       
       const { data: profile } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('org_id')
         .eq('user_id', user.id)
         .single();
@@ -173,7 +173,7 @@ export function useClients() {
       if (!user) throw new Error('User not authenticated');
       
       const { data: profile } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('org_id')
         .eq('user_id', user.id)
         .single();
@@ -256,7 +256,7 @@ export function useCreateClient(options?: UseMutationOptions<Client, Error, Clie
       if (!user) throw new Error('User not authenticated');
       
       const { data: profile } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('org_id')
         .eq('user_id', user.id)
         .single();
